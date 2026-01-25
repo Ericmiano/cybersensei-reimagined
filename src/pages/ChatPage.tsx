@@ -1,0 +1,241 @@
+import { useState, useRef, useEffect } from "react";
+import { Send, Bot, User, Sparkles, RefreshCw } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Card } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
+import { useTheme } from "@/contexts/ThemeContext";
+
+interface Message {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+  timestamp: Date;
+}
+
+const generateAIResponse = (userMessage: string, personality: ReturnType<typeof useTheme>['personality']): string => {
+  const responses = [
+    `Excellent question about "${userMessage.slice(0, 30)}..."! In cybersecurity, understanding the fundamentals is crucial. Let me break this down for you.`,
+    `That's a great topic to explore! When it comes to ${userMessage.includes('security') ? 'security' : 'this subject'}, there are several key concepts to understand.`,
+    `Ah, I see you're interested in this area! This is fundamental to building a strong security mindset. Here's what you need to know...`,
+    `Great inquiry! This touches on core cybersecurity principles. Let me explain with some practical examples...`,
+  ];
+  
+  const baseResponse = responses[Math.floor(Math.random() * responses.length)];
+  
+  // Modify response based on personality
+  let modifier = "";
+  if (personality.humorLevel > 70) {
+    modifier = " 😄 Don't worry, I'll make this fun!";
+  }
+  if (personality.technicalDepth > 70) {
+    modifier += " Let's dive into the technical details...";
+  }
+  if (personality.formality < 30) {
+    return baseResponse.replace("Excellent question", "Nice one").replace("Great inquiry", "Cool question") + modifier;
+  }
+  
+  return baseResponse + modifier;
+};
+
+export default function ChatPage() {
+  const { personality } = useTheme();
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: "welcome",
+      role: "assistant",
+      content: "Greetings, cyber warrior! I am your Cyber Sensei, here to guide you through the digital realm. What would you like to learn about cybersecurity today?",
+      timestamp: new Date(),
+    },
+  ]);
+  const [input, setInput] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim()) return;
+
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      role: "user",
+      content: input.trim(),
+      timestamp: new Date(),
+    };
+
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
+    setIsTyping(true);
+
+    // Simulate AI response delay
+    setTimeout(() => {
+      const aiResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content: generateAIResponse(userMessage.content, personality),
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, aiResponse]);
+      setIsTyping(false);
+    }, 1000 + Math.random() * 1500);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(e);
+    }
+  };
+
+  const clearChat = () => {
+    setMessages([
+      {
+        id: "welcome-new",
+        role: "assistant",
+        content: "Chat cleared! Ready for a fresh start. What would you like to explore?",
+        timestamp: new Date(),
+      },
+    ]);
+  };
+
+  return (
+    <div className="h-[calc(100vh-3.5rem)] flex flex-col">
+      {/* Chat Header */}
+      <div className="flex items-center justify-between px-6 py-4 border-b border-border/30 bg-card/30 backdrop-blur-sm">
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <Bot className="h-8 w-8 text-primary" />
+            <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-neon-green rounded-full animate-pulse" />
+          </div>
+          <div>
+            <h1 className="font-cyber text-lg font-bold text-primary">CYBER SENSEI</h1>
+            <p className="text-xs text-muted-foreground">AI Cybersecurity Mentor • Online</p>
+          </div>
+        </div>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={clearChat}
+          className="text-muted-foreground hover:text-primary"
+        >
+          <RefreshCw className="h-4 w-4 mr-2" />
+          Clear Chat
+        </Button>
+      </div>
+
+      {/* Messages Area */}
+      <ScrollArea className="flex-1 p-6" ref={scrollRef}>
+        <div className="max-w-3xl mx-auto space-y-6">
+          {messages.map((message, index) => (
+            <div
+              key={message.id}
+              className={cn(
+                "flex gap-4 animate-slide-up",
+                message.role === "user" ? "flex-row-reverse" : "flex-row"
+              )}
+              style={{ animationDelay: `${index * 50}ms` }}
+            >
+              {/* Avatar */}
+              <div
+                className={cn(
+                  "flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center",
+                  message.role === "assistant"
+                    ? "bg-primary/20 neon-glow-cyan"
+                    : "bg-secondary/20 neon-glow-magenta"
+                )}
+              >
+                {message.role === "assistant" ? (
+                  <Bot className="h-5 w-5 text-primary" />
+                ) : (
+                  <User className="h-5 w-5 text-secondary" />
+                )}
+              </div>
+
+              {/* Message Bubble */}
+              <Card
+                className={cn(
+                  "max-w-[80%] p-4",
+                  "bg-card/50 backdrop-blur-sm",
+                  message.role === "assistant"
+                    ? "border-primary/20"
+                    : "border-secondary/20"
+                )}
+              >
+                <p className="text-foreground whitespace-pre-wrap">{message.content}</p>
+                <span className="text-xs text-muted-foreground mt-2 block">
+                  {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </span>
+              </Card>
+            </div>
+          ))}
+
+          {/* Typing Indicator */}
+          {isTyping && (
+            <div className="flex gap-4 animate-fade-in">
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-primary/20 neon-glow-cyan">
+                <Bot className="h-5 w-5 text-primary" />
+              </div>
+              <Card className="p-4 bg-card/50 border-primary/20">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="h-4 w-4 text-primary animate-pulse" />
+                  <span className="text-muted-foreground">Cyber Sensei is thinking...</span>
+                  <div className="flex gap-1">
+                    <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                    <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                    <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                  </div>
+                </div>
+              </Card>
+            </div>
+          )}
+        </div>
+      </ScrollArea>
+
+      {/* Input Area */}
+      <div className="border-t border-border/30 p-4 bg-card/30 backdrop-blur-sm">
+        <form onSubmit={handleSubmit} className="max-w-3xl mx-auto">
+          <div className="relative flex items-end gap-2">
+            <Textarea
+              ref={textareaRef}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Ask your Cyber Sensei anything..."
+              className={cn(
+                "min-h-[60px] max-h-[200px] resize-none pr-12",
+                "bg-background/50 border-border/50",
+                "focus:border-primary focus:ring-primary/20",
+                "placeholder:text-muted-foreground/50"
+              )}
+              rows={1}
+            />
+            <Button
+              type="submit"
+              size="icon"
+              disabled={!input.trim() || isTyping}
+              className={cn(
+                "absolute right-2 bottom-2",
+                "bg-primary hover:bg-primary/90",
+                "disabled:opacity-50",
+                "neon-glow-cyan transition-all"
+              )}
+            >
+              <Send className="h-4 w-4" />
+            </Button>
+          </div>
+          <p className="text-xs text-muted-foreground mt-2 text-center">
+            Press Enter to send, Shift+Enter for new line
+          </p>
+        </form>
+      </div>
+    </div>
+  );
+}
