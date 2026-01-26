@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { 
   BookOpen, 
   Shield, 
@@ -17,7 +18,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 
 interface Module {
@@ -272,6 +273,7 @@ export default function TrainingPage() {
 
               {/* Action Button */}
               <Button
+                asChild={module.status !== "locked"}
                 className={cn(
                   "w-full font-medium",
                   module.status === "locked"
@@ -287,16 +289,20 @@ export default function TrainingPage() {
                     <Lock className="h-4 w-4 mr-2" />
                     Locked
                   </>
-                ) : module.status === "completed" ? (
-                  <>
-                    <Star className="h-4 w-4 mr-2" />
-                    Review Module
-                  </>
                 ) : (
-                  <>
-                    Continue Learning
-                    <ChevronRight className="h-4 w-4 ml-2" />
-                  </>
+                  <Link to={`/training/${module.id}`}>
+                    {module.status === "completed" ? (
+                      <>
+                        <Star className="h-4 w-4 mr-2" />
+                        Review Module
+                      </>
+                    ) : (
+                      <>
+                        Continue Learning
+                        <ChevronRight className="h-4 w-4 ml-2" />
+                      </>
+                    )}
+                  </Link>
                 )}
               </Button>
             </CardContent>

@@ -8,6 +8,8 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import Index from "./pages/Index";
 import ChatPage from "./pages/ChatPage";
 import TrainingPage from "./pages/TrainingPage";
+import ModuleDetailPage from "./pages/ModuleDetailPage";
+import LessonPage from "./pages/LessonPage";
 import DashboardPage from "./pages/DashboardPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import SettingsPage from "./pages/SettingsPage";
@@ -27,6 +29,8 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/chat" element={<ChatPage />} />
               <Route path="/training" element={<TrainingPage />} />
+              <Route path="/training/:moduleId" element={<ModuleDetailPage />} />
+              <Route path="/training/:moduleId/lesson/:lessonId" element={<LessonPage />} />
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/analytics" element={<AnalyticsPage />} />
               <Route path="/settings" element={<SettingsPage />} />
