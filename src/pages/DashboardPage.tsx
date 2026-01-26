@@ -7,73 +7,78 @@ import {
   MessageSquare,
   Target,
   Flame,
-  Calendar
+  Zap,
+  Star
 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-
-const statsCards = [
-  {
-    title: "Modules Completed",
-    value: "12",
-    total: "25",
-    icon: BookOpen,
-    color: "primary",
-    change: "+3 this week",
-  },
-  {
-    title: "Chat Sessions",
-    value: "47",
-    icon: MessageSquare,
-    color: "secondary",
-    change: "+12 this month",
-  },
-  {
-    title: "Learning Streak",
-    value: "7",
-    unit: "days",
-    icon: Flame,
-    color: "accent",
-    change: "Personal best!",
-  },
-  {
-    title: "Total Time",
-    value: "24.5",
-    unit: "hours",
-    icon: Clock,
-    color: "primary",
-    change: "+5h this week",
-  },
-];
-
-const recentActivity = [
-  { type: "lesson", title: "Completed: Network Security Basics", time: "2 hours ago", icon: BookOpen },
-  { type: "chat", title: "Asked about SQL injection prevention", time: "5 hours ago", icon: MessageSquare },
-  { type: "achievement", title: "Earned: Security Fundamentals Badge", time: "1 day ago", icon: Award },
-  { type: "lesson", title: "Started: Ethical Hacking Module", time: "2 days ago", icon: Target },
-  { type: "chat", title: "Discussed firewall configurations", time: "3 days ago", icon: MessageSquare },
-];
-
-const achievements = [
-  { title: "First Steps", description: "Complete your first lesson", earned: true, icon: "🎯" },
-  { title: "Quick Learner", description: "Complete 5 lessons in one day", earned: true, icon: "⚡" },
-  { title: "Night Owl", description: "Study past midnight", earned: true, icon: "🦉" },
-  { title: "Streak Master", description: "Maintain a 7-day streak", earned: true, icon: "🔥" },
-  { title: "Curious Mind", description: "Ask 50 questions", earned: false, icon: "🧠" },
-  { title: "Module Master", description: "Complete all modules", earned: false, icon: "👑" },
-];
-
-const skillLevels = [
-  { skill: "Network Security", level: 75, color: "primary" },
-  { skill: "Cryptography", level: 45, color: "secondary" },
-  { skill: "Ethical Hacking", level: 30, color: "accent" },
-  { skill: "Secure Coding", level: 60, color: "primary" },
-  { skill: "Incident Response", level: 20, color: "secondary" },
-];
+import { useUserProgress, ACHIEVEMENTS } from "@/contexts/UserProgressContext";
+import XPBar from "@/components/gamification/XPBar";
+import StreakDisplay from "@/components/gamification/StreakDisplay";
 
 export default function DashboardPage() {
+  const { progress, getAchievements } = useUserProgress();
+  
+  const completedLessons = progress.lessonsCompleted.filter(l => l.completed).length;
+  const achievements = getAchievements();
+  const earnedAchievements = achievements.filter(a => a.earned);
+  
+  // Calculate skill levels based on completed lessons per module
+  const skillLevels = [
+    { skill: "Network Security", level: Math.min(100, completedLessons * 5), color: "primary" },
+    { skill: "Cryptography", level: Math.min(100, progress.totalQuizzesPassed * 4), color: "secondary" },
+    { skill: "Ethical Hacking", level: Math.min(100, progress.totalExercisesCompleted * 6), color: "accent" },
+    { skill: "Secure Coding", level: Math.min(100, Math.floor(progress.xp / 100)), color: "primary" },
+    { skill: "Incident Response", level: Math.min(100, progress.currentStreak * 3), color: "secondary" },
+  ];
+
+  const statsCards = [
+    {
+      title: "Lessons Completed",
+      value: completedLessons.toString(),
+      icon: BookOpen,
+      color: "primary",
+      change: `Level ${progress.level}`,
+    },
+    {
+      title: "Chat Sessions",
+      value: progress.totalChatMessages.toString(),
+      icon: MessageSquare,
+      color: "secondary",
+      change: "AI Interactions",
+    },
+    {
+      title: "Learning Streak",
+      value: progress.currentStreak.toString(),
+      unit: "days",
+      icon: Flame,
+      color: "accent",
+      change: progress.currentStreak >= progress.longestStreak ? "Personal best!" : `Best: ${progress.longestStreak}`,
+    },
+    {
+      title: "Total XP",
+      value: progress.xp.toString(),
+      icon: Zap,
+      color: "primary",
+      change: `+${progress.totalQuizzesPassed * 100 + progress.totalExercisesCompleted * 75} from challenges`,
+    },
+  ];
+
+  // Get recent activity from activity log
+  const recentActivity = progress.activityLog.slice(0, 5).map(activity => ({
+    type: activity.type,
+    title: activity.title + (activity.description ? `: ${activity.description}` : ""),
+    time: new Date(activity.timestamp).toLocaleDateString(),
+    icon: activity.type === "lesson" ? BookOpen : 
+          activity.type === "quiz" ? Target : 
+          activity.type === "exercise" ? Target :
+          activity.type === "achievement" ? Award : 
+          activity.type === "xp" ? Zap : MessageSquare,
+    xp: activity.xpEarned,
+  }));
+
   return (
     <div className="p-6 max-w-7xl mx-auto">
       {/* Header */}
@@ -84,6 +89,16 @@ export default function DashboardPage() {
         <p className="text-muted-foreground">
           Welcome back, Cyber Warrior. Here's your training progress.
         </p>
+      </div>
+
+      {/* XP Bar and Streak */}
+      <div className="grid lg:grid-cols-2 gap-6 mb-8">
+        <Card className="bg-card/50 border-border/50 p-6">
+          <XPBar showDetails />
+        </Card>
+        <Card className="bg-card/50 border-border/50 p-6">
+          <StreakDisplay />
+        </Card>
       </div>
 
       {/* Stats Grid */}
@@ -119,9 +134,6 @@ export default function DashboardPage() {
                     {stat.value}
                   </span>
                   {stat.unit && <span className="text-muted-foreground text-sm">{stat.unit}</span>}
-                  {stat.total && (
-                    <span className="text-muted-foreground text-sm">/ {stat.total}</span>
-                  )}
                 </div>
               </div>
             </CardContent>
@@ -156,36 +168,51 @@ export default function DashboardPage() {
             <CardDescription>Your latest learning actions</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {recentActivity.map((activity, index) => (
-                <div
-                  key={index}
-                  className="flex items-start gap-3 pb-4 border-b border-border/30 last:border-0 last:pb-0"
-                >
-                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <activity.icon className="h-4 w-4 text-primary" />
+            {recentActivity.length > 0 ? (
+              <div className="space-y-4">
+                {recentActivity.map((activity, index) => (
+                  <div
+                    key={index}
+                    className="flex items-start gap-3 pb-4 border-b border-border/30 last:border-0 last:pb-0"
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                      <activity.icon className="h-4 w-4 text-primary" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-foreground truncate">{activity.title}</p>
+                      <div className="flex items-center gap-2">
+                        <p className="text-xs text-muted-foreground">{activity.time}</p>
+                        {activity.xp && (
+                          <Badge variant="outline" className="text-xs text-neon-orange border-neon-orange/30">
+                            +{activity.xp} XP
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm text-foreground truncate">{activity.title}</p>
-                    <p className="text-xs text-muted-foreground">{activity.time}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground text-center py-8">
+                No activity yet. Start learning to see your progress!
+              </p>
+            )}
           </CardContent>
         </Card>
 
         {/* Achievements */}
         <Card className="lg:col-span-3 bg-card/50 border-border/50">
           <CardHeader>
-            <CardTitle className="font-cyber text-xl text-primary">ACHIEVEMENTS</CardTitle>
+            <CardTitle className="font-cyber text-xl text-primary">
+              ACHIEVEMENTS ({earnedAchievements.length}/{achievements.length})
+            </CardTitle>
             <CardDescription>Badges earned through your cybersecurity journey</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4">
               {achievements.map((achievement) => (
                 <div
-                  key={achievement.title}
+                  key={achievement.id}
                   className={cn(
                     "text-center p-4 rounded-lg border transition-all duration-300",
                     achievement.earned

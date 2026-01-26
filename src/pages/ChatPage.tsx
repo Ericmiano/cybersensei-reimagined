@@ -6,6 +6,10 @@ import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useChatHistory } from "@/contexts/ChatHistoryContext";
+import { useUserProgress } from "@/contexts/UserProgressContext";
+import XPBar from "@/components/gamification/XPBar";
+import StreakDisplay from "@/components/gamification/StreakDisplay";
 
 interface Message {
   id: string;
@@ -41,14 +45,23 @@ const generateAIResponse = (userMessage: string, personality: ReturnType<typeof 
 
 export default function ChatPage() {
   const { personality } = useTheme();
-  const [messages, setMessages] = useState<Message[]>([
-    {
+  const { messages: savedMessages, addMessage, clearHistory } = useChatHistory();
+  const { incrementChatMessages, updateStreak } = useUserProgress();
+  
+  const [messages, setMessages] = useState<Message[]>(() => {
+    if (savedMessages.length > 0) {
+      return savedMessages.map(m => ({
+        ...m,
+        timestamp: new Date(m.timestamp),
+      }));
+    }
+    return [{
       id: "welcome",
-      role: "assistant",
+      role: "assistant" as const,
       content: "Greetings, cyber warrior! I am your Cyber Sensei, here to guide you through the digital realm. What would you like to learn about cybersecurity today?",
       timestamp: new Date(),
-    },
-  ]);
+    }];
+  });
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -59,6 +72,10 @@ export default function ChatPage() {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages]);
+
+  useEffect(() => {
+    updateStreak();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,18 +89,22 @@ export default function ChatPage() {
     };
 
     setMessages((prev) => [...prev, userMessage]);
+    addMessage({ role: "user", content: userMessage.content });
+    incrementChatMessages();
     setInput("");
     setIsTyping(true);
 
     // Simulate AI response delay
     setTimeout(() => {
+      const aiContent = generateAIResponse(userMessage.content, personality);
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: generateAIResponse(userMessage.content, personality),
+        content: aiContent,
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, aiResponse]);
+      addMessage({ role: "assistant", content: aiContent });
       setIsTyping(false);
     }, 1000 + Math.random() * 1500);
   };
@@ -95,7 +116,8 @@ export default function ChatPage() {
     }
   };
 
-  const clearChat = () => {
+  const handleClearChat = () => {
+    clearHistory();
     setMessages([
       {
         id: "welcome-new",
@@ -120,15 +142,18 @@ export default function ChatPage() {
             <p className="text-xs text-muted-foreground">AI Cybersecurity Mentor • Online</p>
           </div>
         </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={clearChat}
-          className="text-muted-foreground hover:text-primary"
-        >
-          <RefreshCw className="h-4 w-4 mr-2" />
-          Clear Chat
-        </Button>
+        <div className="flex items-center gap-4">
+          <StreakDisplay variant="compact" />
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleClearChat}
+            className="text-muted-foreground hover:text-primary"
+          >
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Clear Chat
+          </Button>
+        </div>
       </div>
 
       {/* Messages Area */}
