@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { 
   ArrowLeft, 
@@ -16,8 +16,12 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
+import { useUserProgress } from "@/contexts/UserProgressContext";
+import CodeExercise from "@/components/exercises/CodeExercise";
+import TerminalExercise from "@/components/exercises/TerminalExercise";
+import XPBar from "@/components/gamification/XPBar";
 
-// Lesson content data - in a real app this would come from an API/database
+// Lesson content data
 const lessonContent: Record<string, {
   title: string;
   moduleId: string;
@@ -30,6 +34,20 @@ const lessonContent: Record<string, {
     question: string;
     options: string[];
     correctIndex: number;
+  };
+  exercise?: {
+    type: "code" | "terminal";
+    title: string;
+    description: string;
+    initialCode?: string;
+    expectedOutput?: string;
+    hints: string[];
+    difficulty: "easy" | "medium" | "hard";
+    // For code exercises
+    validationKeywords?: string[];
+    // For terminal exercises
+    objectives?: string[];
+    commands?: { command: string; output: string; isRequired?: boolean }[];
   };
   nextLessonId?: string;
   prevLessonId?: string;
@@ -69,6 +87,20 @@ const lessonContent: Record<string, {
         "To design websites"
       ],
       correctIndex: 1
+    },
+    exercise: {
+      type: "code",
+      title: "Hash a Password",
+      description: "Write a function that takes a password string and returns its SHA-256 hash. Use the hashlib library.",
+      initialCode: "import hashlib\n\ndef hash_password(password):\n    # Your code here\n    pass",
+      expectedOutput: "A 64-character hexadecimal hash string",
+      hints: [
+        "Use hashlib.sha256() to create a hash object",
+        "Remember to encode the string to bytes using .encode()",
+        "Use .hexdigest() to get the hash as a hex string"
+      ],
+      difficulty: "easy",
+      validationKeywords: ["hashlib", "sha256", "encode", "hexdigest"]
     },
     nextLessonId: "1-2"
   },
@@ -112,10 +144,30 @@ const lessonContent: Record<string, {
       ],
       correctIndex: 1
     },
+    exercise: {
+      type: "terminal",
+      title: "File Encryption Lab",
+      description: "Practice using OpenSSL commands to encrypt and verify files. Complete the objectives below.",
+      objectives: [
+        "Check the OpenSSL version",
+        "List available encryption algorithms",
+        "Encrypt a sample file"
+      ],
+      commands: [
+        { command: "openssl version", output: "OpenSSL 3.0.2 15 Mar 2022 (Library: OpenSSL 3.0.2 15 Mar 2022)", isRequired: true },
+        { command: "openssl list -cipher-algorithms", output: "AES-128-CBC\nAES-256-CBC\nAES-128-GCM\nAES-256-GCM\nDES-EDE3-CBC\n...", isRequired: true },
+        { command: "openssl enc -aes-256-cbc -salt -in file.txt -out encrypted.txt", output: "File encrypted successfully.\nOutput: encrypted.txt", isRequired: true }
+      ],
+      hints: [
+        "Use 'openssl version' to check the installed version",
+        "List ciphers with 'openssl list -cipher-algorithms'",
+        "Encrypt files with 'openssl enc -aes-256-cbc -salt -in [file] -out [output]'"
+      ],
+      difficulty: "medium"
+    },
     prevLessonId: "1-1",
     nextLessonId: "1-3"
   },
-  // Default lesson content for lessons without specific content
 };
 
 // Type for lesson content
@@ -131,6 +183,18 @@ interface LessonData {
     question: string;
     options: string[];
     correctIndex: number;
+  };
+  exercise?: {
+    type: "code" | "terminal";
+    title: string;
+    description: string;
+    initialCode?: string;
+    expectedOutput?: string;
+    hints: string[];
+    difficulty: "easy" | "medium" | "hard";
+    validationKeywords?: string[];
+    objectives?: string[];
+    commands?: { command: string; output: string; isRequired?: boolean }[];
   };
   nextLessonId?: string;
   prevLessonId?: string;
@@ -171,11 +235,19 @@ export default function LessonPage() {
   const navigate = useNavigate();
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
-  const [isCompleted, setIsCompleted] = useState(false);
+  const { progress, completeLesson, passQuiz, updateStreak } = useUserProgress();
 
   const lesson = lessonId 
     ? (lessonContent[lessonId] || getDefaultLessonContent(lessonId))
     : null;
+
+  const isLessonCompleted = lessonId 
+    ? progress.lessonsCompleted.some(l => l.lessonId === lessonId && l.completed)
+    : false;
+
+  useEffect(() => {
+    updateStreak();
+  }, []);
 
   if (!lesson || !moduleId) {
     return (
@@ -197,9 +269,12 @@ export default function LessonPage() {
     if (lesson.quiz && selectedAnswer === lesson.quiz.correctIndex) {
       toast({
         title: "Correct! 🎉",
-        description: "Great job! You've mastered this concept.",
+        description: "+100 XP earned!",
       });
-      setIsCompleted(true);
+      if (lessonId) {
+        completeLesson(lessonId, moduleId);
+        passQuiz(lessonId, 100);
+      }
     } else {
       toast({
         title: "Not quite right",
@@ -214,10 +289,34 @@ export default function LessonPage() {
       navigate(`/training/${moduleId}/lesson/${lesson.nextLessonId}`);
       setSelectedAnswer(null);
       setShowResult(false);
-      setIsCompleted(false);
     } else {
       navigate(`/training/${moduleId}`);
     }
+  };
+
+  // Validation function for code exercises
+  const validateCode = (code: string): { success: boolean; message: string } => {
+    const keywords = lesson.exercise?.validationKeywords || [];
+    const hasAllKeywords = keywords.every(kw => code.toLowerCase().includes(kw.toLowerCase()));
+    
+    if (!hasAllKeywords) {
+      return {
+        success: false,
+        message: `Your code is missing some required elements. Make sure to use: ${keywords.join(", ")}`
+      };
+    }
+    
+    if (code.includes("pass") && code.split("pass").length > 1) {
+      return {
+        success: false,
+        message: "Replace the 'pass' statement with your implementation."
+      };
+    }
+    
+    return {
+      success: true,
+      message: "Great job! Your implementation looks correct. The function properly hashes the password using SHA-256."
+    };
   };
 
   return (
@@ -233,16 +332,25 @@ export default function LessonPage() {
           Back to {lesson.moduleName}
         </Button>
 
-        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-          <BookOpen className="h-4 w-4" />
-          <span>{lesson.moduleName}</span>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <BookOpen className="h-4 w-4" />
+            <span>{lesson.moduleName}</span>
+          </div>
+          <XPBar showDetails={false} className="w-48" />
         </div>
         
         <h1 className="font-cyber text-3xl font-bold text-primary mb-4">
           {lesson.title}
         </h1>
 
-        <Progress value={isCompleted ? 100 : 50} className="h-2 bg-muted" />
+        <Progress value={isLessonCompleted ? 100 : 50} className="h-2 bg-muted" />
+        {isLessonCompleted && (
+          <p className="text-xs text-neon-green mt-2 flex items-center gap-1">
+            <CheckCircle2 className="h-3 w-3" />
+            Lesson Completed
+          </p>
+        )}
       </div>
 
       {/* Lesson Content */}
@@ -321,6 +429,34 @@ export default function LessonPage() {
           </div>
         ))}
       </div>
+
+      {/* Interactive Exercise */}
+      {lesson.exercise && lessonId && (
+        <div className="mb-8">
+          {lesson.exercise.type === "code" && lesson.exercise.initialCode && (
+            <CodeExercise
+              lessonId={lessonId}
+              title={lesson.exercise.title}
+              description={lesson.exercise.description}
+              initialCode={lesson.exercise.initialCode}
+              expectedOutput={lesson.exercise.expectedOutput}
+              validationFn={validateCode}
+              hints={lesson.exercise.hints}
+              difficulty={lesson.exercise.difficulty}
+            />
+          )}
+          {lesson.exercise.type === "terminal" && lesson.exercise.objectives && lesson.exercise.commands && (
+            <TerminalExercise
+              lessonId={lessonId}
+              title={lesson.exercise.title}
+              description={lesson.exercise.description}
+              objectives={lesson.exercise.objectives}
+              commands={lesson.exercise.commands}
+              hints={lesson.exercise.hints}
+            />
+          )}
+        </div>
+      )}
 
       {/* Quiz Section */}
       {lesson.quiz && (
@@ -412,7 +548,6 @@ export default function LessonPage() {
               navigate(`/training/${moduleId}/lesson/${lesson.prevLessonId}`);
               setSelectedAnswer(null);
               setShowResult(false);
-              setIsCompleted(false);
             }}
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
