@@ -12,7 +12,10 @@ import {
   CheckCircle2,
   Clock,
   Star,
-  ChevronRight
+  ChevronRight,
+  Sparkles,
+  TrendingUp,
+  Zap
 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -20,6 +23,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
+import { useUserProgress } from "@/contexts/UserProgressContext";
 
 interface Module {
   id: string;
@@ -139,6 +143,7 @@ const difficultyColors = {
 
 export default function TrainingPage() {
   const [activeCategory, setActiveCategory] = useState("all");
+  const { progress } = useUserProgress();
 
   const filteredModules = modules.filter(
     (module) => activeCategory === "all" || module.category === activeCategory
@@ -150,13 +155,20 @@ export default function TrainingPage() {
       100
   );
 
+  // Calculate user's completed lessons per module
+  const getModuleProgress = (moduleId: string) => {
+    const moduleLessons = progress.lessonsCompleted.filter(l => l.moduleId === moduleId);
+    return moduleLessons.filter(l => l.completed).length;
+  };
+
   return (
     <div className="p-6 max-w-7xl mx-auto">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="font-cyber text-3xl font-bold mb-2">
-          <span className="text-primary">TRAINING</span>
-          <span className="text-muted-foreground ml-2">MODULES</span>
+      <div className="mb-8 animate-slide-up">
+        <h1 className="font-cyber text-3xl font-bold mb-2 flex items-center gap-3">
+          <span className="text-primary animate-text-glow">TRAINING</span>
+          <span className="text-muted-foreground">MODULES</span>
+          <Sparkles className="h-6 w-6 text-secondary animate-pulse-glow" />
         </h1>
         <p className="text-muted-foreground">
           Master cybersecurity through structured learning paths and hands-on challenges.
@@ -164,23 +176,46 @@ export default function TrainingPage() {
       </div>
 
       {/* Progress Overview */}
-      <Card className="mb-8 bg-card/50 border-border/50 neon-border">
+      <Card className="mb-8 bg-card/50 border-border/50 neon-border interactive-card overflow-hidden">
+        <div className="h-1 bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-magenta animate-border-flow" />
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-              <h3 className="font-cyber text-lg text-primary mb-1">OVERALL PROGRESS</h3>
-              <p className="text-sm text-muted-foreground">
-                {modules.filter((m) => m.status === "completed").length} of {modules.length} modules completed
-              </p>
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center animate-float">
+                <TrendingUp className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <h3 className="font-cyber text-lg text-primary">OVERALL PROGRESS</h3>
+                <p className="text-sm text-muted-foreground">
+                  {modules.filter((m) => m.status === "completed").length} of {modules.length} modules completed
+                </p>
+              </div>
             </div>
             <div className="flex items-center gap-4">
               <div className="flex-1 md:w-48">
                 <Progress value={totalProgress} className="h-3 bg-muted" />
               </div>
-              <span className="font-cyber text-2xl text-primary neon-text-cyan">
+              <span className="font-cyber text-2xl text-primary neon-text-cyan animate-glow-pulse">
                 {totalProgress}%
               </span>
             </div>
+          </div>
+          
+          {/* Quick stats */}
+          <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-border/30">
+            {[
+              { label: "Lessons Completed", value: progress.lessonsCompleted.filter(l => l.completed).length, icon: BookOpen },
+              { label: "Total XP Earned", value: progress.xp, icon: Zap },
+              { label: "Current Streak", value: `${progress.currentStreak} days`, icon: Star },
+            ].map((stat, i) => (
+              <div key={stat.label} className="text-center animate-slide-up" style={{ animationDelay: `${i * 100}ms` }}>
+                <div className="flex justify-center mb-2">
+                  <stat.icon className="h-5 w-5 text-primary" />
+                </div>
+                <div className="font-cyber text-xl text-primary">{stat.value}</div>
+                <div className="text-xs text-muted-foreground">{stat.label}</div>
+              </div>
+            ))}
           </div>
         </CardContent>
       </Card>
@@ -205,18 +240,22 @@ export default function TrainingPage() {
 
       {/* Modules Grid */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredModules.map((module, index) => (
-          <Card
-            key={module.id}
-            className={cn(
-              "group relative overflow-hidden transition-all duration-300",
-              "bg-card/50 border-border/50",
-              "hover:border-primary/50 hover:-translate-y-1",
-              module.status === "locked" && "opacity-60",
-              "animate-slide-up"
-            )}
-            style={{ animationDelay: `${index * 100}ms` }}
-          >
+        {filteredModules.map((module, index) => {
+          const userProgress = getModuleProgress(module.id);
+          const effectiveCompleted = Math.max(module.completedLessons, userProgress);
+          
+          return (
+            <Card
+              key={module.id}
+              className={cn(
+                "group relative overflow-hidden transition-all duration-300",
+                "bg-card/50 border-border/50",
+                "hover:border-primary/50 hover-lift interactive-card",
+                module.status === "locked" && "opacity-60 grayscale",
+                "animate-slide-up"
+              )}
+              style={{ animationDelay: `${index * 100}ms` }}
+            >
             {module.status === "completed" && (
               <div className="absolute top-4 right-4">
                 <CheckCircle2 className="h-6 w-6 text-neon-green" />
@@ -262,11 +301,11 @@ export default function TrainingPage() {
                 <div className="flex justify-between text-sm mb-2">
                   <span className="text-muted-foreground">Progress</span>
                   <span className="text-primary font-medium">
-                    {module.completedLessons}/{module.lessons} lessons
+                    {effectiveCompleted}/{module.lessons} lessons
                   </span>
                 </div>
                 <Progress
-                  value={(module.completedLessons / module.lessons) * 100}
+                  value={(effectiveCompleted / module.lessons) * 100}
                   className="h-2 bg-muted"
                 />
               </div>
@@ -275,12 +314,12 @@ export default function TrainingPage() {
               <Button
                 asChild={module.status !== "locked"}
                 className={cn(
-                  "w-full font-medium",
+                  "w-full font-medium transition-all",
                   module.status === "locked"
                     ? "bg-muted text-muted-foreground cursor-not-allowed"
                     : module.status === "completed"
-                    ? "bg-neon-green/20 text-neon-green hover:bg-neon-green/30"
-                    : "bg-primary hover:bg-primary/90 neon-glow-cyan"
+                    ? "bg-neon-green/20 text-neon-green hover:bg-neon-green/30 hover:scale-[1.02]"
+                    : "bg-primary hover:bg-primary/90 neon-glow-cyan hover:scale-[1.02]"
                 )}
                 disabled={module.status === "locked"}
               >
@@ -307,7 +346,8 @@ export default function TrainingPage() {
               </Button>
             </CardContent>
           </Card>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
