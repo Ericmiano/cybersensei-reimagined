@@ -1,35 +1,66 @@
 import { useState } from "react";
-import { Sliders, Palette, User, Volume2, Save, RotateCcw } from "lucide-react";
+import { Sliders, Palette, User, Bell, Keyboard as KeyboardIcon, Save, RotateCcw, Sparkles } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useTheme, AgentPersonality, ThemeSettings } from "@/contexts/ThemeContext";
+import { useTheme, AgentPersonality } from "@/contexts/ThemeContext";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
+import { AnimatedSlider } from "@/components/ui/animated-slider";
+import UserProfileSettings from "@/components/settings/UserProfileSettings";
+import NotificationSettings from "@/components/settings/NotificationSettings";
+import KeyboardShortcuts from "@/components/settings/KeyboardShortcuts";
 
-const personalityLabels = {
-  formality: { low: "Casual", high: "Professional", icon: "👔" },
-  teachingStyle: { low: "Encouraging", high: "Challenging", icon: "📚" },
-  humorLevel: { low: "Serious", high: "Playful", icon: "😄" },
-  responseLength: { low: "Concise", high: "Detailed", icon: "📝" },
-  technicalDepth: { low: "Beginner-friendly", high: "Expert-level", icon: "🔬" },
+const personalityConfig = {
+  formality: { 
+    low: "Casual", 
+    high: "Professional", 
+    icon: "👔",
+    glowColor: "cyan" as const,
+    description: "How formal should the AI's language be?"
+  },
+  teachingStyle: { 
+    low: "Encouraging", 
+    high: "Challenging", 
+    icon: "📚",
+    glowColor: "purple" as const,
+    description: "Prefer gentle guidance or tough love?"
+  },
+  humorLevel: { 
+    low: "Serious", 
+    high: "Playful", 
+    icon: "😄",
+    glowColor: "orange" as const,
+    description: "How much humor in responses?"
+  },
+  responseLength: { 
+    low: "Concise", 
+    high: "Detailed", 
+    icon: "📝",
+    glowColor: "green" as const,
+    description: "Short answers or comprehensive explanations?"
+  },
+  technicalDepth: { 
+    low: "Beginner", 
+    high: "Expert", 
+    icon: "🔬",
+    glowColor: "magenta" as const,
+    description: "Adjust technical complexity level"
+  },
 };
 
 const colorPresets = [
-  { name: "Neon Cyan", primary: "cyan", accent: "magenta" },
-  { name: "Electric Purple", primary: "purple", accent: "cyan" },
-  { name: "Toxic Green", primary: "green", accent: "orange" },
-  { name: "Hot Pink", primary: "magenta", accent: "cyan" },
+  { name: "Neon Cyan", primary: "cyan", accent: "magenta", gradient: "from-neon-cyan to-neon-magenta" },
+  { name: "Electric Purple", primary: "purple", accent: "cyan", gradient: "from-neon-purple to-neon-cyan" },
+  { name: "Toxic Green", primary: "green", accent: "orange", gradient: "from-neon-green to-neon-orange" },
+  { name: "Hot Pink", primary: "magenta", accent: "cyan", gradient: "from-neon-magenta to-neon-cyan" },
 ];
 
 export default function SettingsPage() {
   const { theme, setTheme, personality, setPersonality, toggleMode } = useTheme();
   const [localPersonality, setLocalPersonality] = useState<AgentPersonality>(personality);
-  const [animationsEnabled, setAnimationsEnabled] = useState(true);
-  const [soundEnabled, setSoundEnabled] = useState(false);
 
   const handlePersonalityChange = (key: keyof AgentPersonality, value: number[]) => {
     setLocalPersonality((prev) => ({ ...prev, [key]: value[0] }));
@@ -38,7 +69,7 @@ export default function SettingsPage() {
   const savePersonality = () => {
     setPersonality(localPersonality);
     toast({
-      title: "Personality Saved",
+      title: "✨ Personality Saved",
       description: "Your AI sensei's personality has been updated.",
     });
   };
@@ -59,19 +90,22 @@ export default function SettingsPage() {
     });
   };
 
-  const getPersonalityLabel = (key: keyof typeof personalityLabels, value: number) => {
-    const labels = personalityLabels[key];
-    if (value < 33) return labels.low;
-    if (value > 66) return labels.high;
+  const getPersonalityLabel = (key: keyof typeof personalityConfig, value: number) => {
+    const config = personalityConfig[key];
+    if (value < 33) return config.low;
+    if (value > 66) return config.high;
     return "Balanced";
   };
+
+  const hasPersonalityChanges = JSON.stringify(localPersonality) !== JSON.stringify(personality);
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="font-cyber text-3xl font-bold mb-2">
-          <span className="text-primary">SETTINGS</span>
+      <div className="mb-8 animate-slide-up">
+        <h1 className="font-cyber text-3xl font-bold mb-2 flex items-center gap-3">
+          <span className="text-primary animate-text-glow">SETTINGS</span>
+          <Sparkles className="h-6 w-6 text-secondary animate-pulse-glow" />
         </h1>
         <p className="text-muted-foreground">
           Customize your Cyber Sensei experience.
@@ -79,100 +113,131 @@ export default function SettingsPage() {
       </div>
 
       <Tabs defaultValue="personality" className="space-y-6">
-        <TabsList className="bg-muted/50">
-          <TabsTrigger value="personality" className="gap-2">
+        <TabsList className="bg-muted/50 p-1 gap-1">
+          <TabsTrigger value="personality" className="gap-2 data-[state=active]:neon-glow-cyan">
             <Sliders className="h-4 w-4" />
             AI Personality
           </TabsTrigger>
-          <TabsTrigger value="appearance" className="gap-2">
+          <TabsTrigger value="appearance" className="gap-2 data-[state=active]:neon-glow-cyan">
             <Palette className="h-4 w-4" />
             Appearance
           </TabsTrigger>
-          <TabsTrigger value="preferences" className="gap-2">
+          <TabsTrigger value="profile" className="gap-2 data-[state=active]:neon-glow-cyan">
             <User className="h-4 w-4" />
-            Preferences
+            Profile
+          </TabsTrigger>
+          <TabsTrigger value="notifications" className="gap-2 data-[state=active]:neon-glow-cyan">
+            <Bell className="h-4 w-4" />
+            Notifications
+          </TabsTrigger>
+          <TabsTrigger value="shortcuts" className="gap-2 data-[state=active]:neon-glow-cyan">
+            <KeyboardIcon className="h-4 w-4" />
+            Shortcuts
           </TabsTrigger>
         </TabsList>
 
         {/* AI Personality Tab */}
-        <TabsContent value="personality">
-          <Card className="bg-card/50 border-border/50">
+        <TabsContent value="personality" className="animate-fade-in">
+          <Card className="bg-card/50 border-border/50 interactive-card">
             <CardHeader>
-              <CardTitle className="font-cyber text-xl text-primary">
-                AI PERSONALITY CUSTOMIZATION
-              </CardTitle>
-              <CardDescription>
-                Fine-tune how your Cyber Sensei communicates and teaches.
-              </CardDescription>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="font-cyber text-xl text-primary">
+                    AI PERSONALITY CUSTOMIZATION
+                  </CardTitle>
+                  <CardDescription>
+                    Fine-tune how your Cyber Sensei communicates and teaches.
+                  </CardDescription>
+                </div>
+                {hasPersonalityChanges && (
+                  <div className="flex gap-2 animate-fade-in">
+                    <Button onClick={resetPersonality} variant="outline" size="sm">
+                      <RotateCcw className="h-4 w-4 mr-1" />
+                      Reset
+                    </Button>
+                    <Button onClick={savePersonality} size="sm" className="neon-glow-cyan">
+                      <Save className="h-4 w-4 mr-1" />
+                      Save
+                    </Button>
+                  </div>
+                )}
+              </div>
             </CardHeader>
             <CardContent className="space-y-8">
-              {(Object.keys(personalityLabels) as Array<keyof typeof personalityLabels>).map(
-                (key) => (
-                  <div key={key} className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="text-2xl">{personalityLabels[key].icon}</span>
-                        <Label className="text-base font-medium capitalize">
-                          {key.replace(/([A-Z])/g, " $1").trim()}
-                        </Label>
+              {(Object.keys(personalityConfig) as Array<keyof typeof personalityConfig>).map(
+                (key, index) => {
+                  const config = personalityConfig[key];
+                  return (
+                    <div 
+                      key={key} 
+                      className="space-y-4 p-4 rounded-lg bg-muted/20 border border-border/30 hover:border-primary/30 transition-all animate-slide-up"
+                      style={{ animationDelay: `${index * 100}ms` }}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <span className="text-3xl animate-float" style={{ animationDelay: `${index * 200}ms` }}>
+                            {config.icon}
+                          </span>
+                          <div>
+                            <Label className="text-base font-medium capitalize">
+                              {key.replace(/([A-Z])/g, " $1").trim()}
+                            </Label>
+                            <p className="text-xs text-muted-foreground">{config.description}</p>
+                          </div>
+                        </div>
+                        <span className={cn(
+                          "text-sm font-medium px-3 py-1 rounded-full transition-all",
+                          "bg-primary/10 text-primary border border-primary/20"
+                        )}>
+                          {getPersonalityLabel(key, localPersonality[key])}
+                        </span>
                       </div>
-                      <span className="text-sm text-primary font-medium">
-                        {getPersonalityLabel(key, localPersonality[key])}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <span className="text-xs text-muted-foreground w-24">
-                        {personalityLabels[key].low}
-                      </span>
-                      <Slider
+                      <AnimatedSlider
                         value={[localPersonality[key]]}
                         onValueChange={(value) => handlePersonalityChange(key, value)}
                         max={100}
                         step={1}
-                        className="flex-1"
+                        lowLabel={config.low}
+                        highLabel={config.high}
+                        glowColor={config.glowColor}
+                        showValue={false}
                       />
-                      <span className="text-xs text-muted-foreground w-24 text-right">
-                        {personalityLabels[key].high}
-                      </span>
                     </div>
-                  </div>
-                )
+                  );
+                }
               )}
 
-              {/* Preview Box */}
-              <Card className="bg-muted/30 border-primary/20 neon-border">
-                <CardContent className="p-4">
-                  <p className="text-sm text-muted-foreground mb-2">Preview Response Style:</p>
-                  <p className="text-foreground">
+              {/* Live Preview Box */}
+              <Card className="bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/20 overflow-hidden">
+                <div className="h-1 bg-gradient-to-r from-primary via-secondary to-accent animate-border-flow" />
+                <CardContent className="p-5">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                      🤖
+                    </div>
+                    <span className="font-cyber text-sm text-primary">LIVE PREVIEW</span>
+                  </div>
+                  <p className="text-foreground leading-relaxed">
                     {localPersonality.formality > 66
-                      ? "Greetings. I shall provide you with comprehensive cybersecurity guidance."
+                      ? "Greetings, cyber warrior. I shall provide you with comprehensive cybersecurity guidance tailored to your expertise level."
                       : localPersonality.formality < 33
-                      ? "Hey there! Ready to dive into some cool security stuff?"
-                      : "Hello! Let's explore cybersecurity together."}
-                    {localPersonality.humorLevel > 66 && " 😄 This is going to be fun!"}
+                      ? "Hey there! 👋 Ready to dive into some cool security stuff? Let's make hacking fun!"
+                      : "Hello! Let's explore cybersecurity together. I'm here to help you learn."}
+                    {localPersonality.humorLevel > 66 && " 😄 Don't worry, we'll have some fun along the way!"}
                     {localPersonality.technicalDepth > 66 &&
-                      " We'll cover advanced concepts including cryptographic protocols and exploit development."}
+                      " We'll cover advanced concepts including cryptographic protocols, exploit development, and zero-day vulnerabilities."}
+                    {localPersonality.responseLength > 66 &&
+                      " I'll make sure to give you all the context and details you need to fully understand each topic."}
                   </p>
                 </CardContent>
               </Card>
-
-              <div className="flex gap-4">
-                <Button onClick={savePersonality} className="flex-1 neon-glow-cyan">
-                  <Save className="h-4 w-4 mr-2" />
-                  Save Personality
-                </Button>
-                <Button onClick={resetPersonality} variant="outline" className="flex-1">
-                  <RotateCcw className="h-4 w-4 mr-2" />
-                  Reset to Defaults
-                </Button>
-              </div>
             </CardContent>
           </Card>
         </TabsContent>
 
         {/* Appearance Tab */}
-        <TabsContent value="appearance">
-          <Card className="bg-card/50 border-border/50">
+        <TabsContent value="appearance" className="animate-fade-in">
+          <Card className="bg-card/50 border-border/50 interactive-card">
             <CardHeader>
               <CardTitle className="font-cyber text-xl text-primary">
                 THEME CUSTOMIZATION
@@ -181,7 +246,7 @@ export default function SettingsPage() {
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Dark/Light Mode */}
-              <div className="flex items-center justify-between p-4 rounded-lg bg-muted/30">
+              <div className="flex items-center justify-between p-4 rounded-lg bg-muted/30 hover:bg-muted/40 transition-colors">
                 <div>
                   <Label className="text-base font-medium">Dark Mode</Label>
                   <p className="text-sm text-muted-foreground">
@@ -195,23 +260,29 @@ export default function SettingsPage() {
               <div>
                 <Label className="text-base font-medium mb-4 block">Color Presets</Label>
                 <div className="grid grid-cols-2 gap-4">
-                  {colorPresets.map((preset) => (
+                  {colorPresets.map((preset, index) => (
                     <Button
                       key={preset.name}
                       variant="outline"
                       className={cn(
-                        "h-auto p-4 flex flex-col items-start",
-                        "hover:border-primary/50 transition-colors",
+                        "h-auto p-4 flex flex-col items-start relative overflow-hidden",
+                        "hover:border-primary/50 transition-all hover-lift",
+                        "animate-slide-up",
                         theme.primaryColor === preset.primary && "border-primary neon-border"
                       )}
+                      style={{ animationDelay: `${index * 100}ms` }}
                       onClick={() =>
                         setTheme({ ...theme, primaryColor: preset.primary, accentColor: preset.accent })
                       }
                     >
-                      <span className="font-medium">{preset.name}</span>
+                      <div className={cn(
+                        "absolute top-0 left-0 right-0 h-1 bg-gradient-to-r",
+                        preset.gradient
+                      )} />
+                      <span className="font-medium mt-1">{preset.name}</span>
                       <div className="flex gap-2 mt-2">
                         <div
-                          className={cn("w-6 h-6 rounded-full", {
+                          className={cn("w-6 h-6 rounded-full transition-transform hover:scale-110", {
                             "bg-neon-cyan": preset.primary === "cyan",
                             "bg-neon-purple": preset.primary === "purple",
                             "bg-neon-green": preset.primary === "green",
@@ -219,7 +290,7 @@ export default function SettingsPage() {
                           })}
                         />
                         <div
-                          className={cn("w-6 h-6 rounded-full", {
+                          className={cn("w-6 h-6 rounded-full transition-transform hover:scale-110", {
                             "bg-neon-magenta": preset.accent === "magenta",
                             "bg-neon-cyan": preset.accent === "cyan",
                             "bg-neon-orange": preset.accent === "orange",
@@ -232,64 +303,42 @@ export default function SettingsPage() {
               </div>
 
               {/* Animation Intensity */}
-              <div className="space-y-4">
+              <div className="p-4 rounded-lg bg-muted/30 space-y-4">
                 <div className="flex items-center justify-between">
-                  <Label className="text-base font-medium">Animation Intensity</Label>
-                  <span className="text-sm text-primary">{theme.animationIntensity}%</span>
+                  <div>
+                    <Label className="text-base font-medium">Animation Intensity</Label>
+                    <p className="text-sm text-muted-foreground">Control the amount of visual effects</p>
+                  </div>
+                  <span className="text-sm text-primary font-medium">{theme.animationIntensity}%</span>
                 </div>
-                <Slider
+                <AnimatedSlider
                   value={[theme.animationIntensity]}
                   onValueChange={(value) => setTheme({ ...theme, animationIntensity: value[0] })}
                   max={100}
                   step={10}
+                  lowLabel="Subtle"
+                  highLabel="Dramatic"
+                  glowColor="purple"
+                  showValue={false}
                 />
-                <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>Subtle</span>
-                  <span>Dramatic</span>
-                </div>
               </div>
             </CardContent>
           </Card>
         </TabsContent>
 
-        {/* Preferences Tab */}
-        <TabsContent value="preferences">
-          <Card className="bg-card/50 border-border/50">
-            <CardHeader>
-              <CardTitle className="font-cyber text-xl text-primary">PREFERENCES</CardTitle>
-              <CardDescription>General application settings.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="flex items-center justify-between p-4 rounded-lg bg-muted/30">
-                <div>
-                  <Label className="text-base font-medium">Enable Animations</Label>
-                  <p className="text-sm text-muted-foreground">
-                    Show visual animations throughout the app
-                  </p>
-                </div>
-                <Switch checked={animationsEnabled} onCheckedChange={setAnimationsEnabled} />
-              </div>
+        {/* Profile Tab */}
+        <TabsContent value="profile" className="animate-fade-in">
+          <UserProfileSettings />
+        </TabsContent>
 
-              <div className="flex items-center justify-between p-4 rounded-lg bg-muted/30">
-                <div className="flex items-center gap-3">
-                  <Volume2 className="h-5 w-5 text-primary" />
-                  <div>
-                    <Label className="text-base font-medium">Sound Effects</Label>
-                    <p className="text-sm text-muted-foreground">
-                      Play sounds for notifications and interactions
-                    </p>
-                  </div>
-                </div>
-                <Switch checked={soundEnabled} onCheckedChange={setSoundEnabled} />
-              </div>
+        {/* Notifications Tab */}
+        <TabsContent value="notifications" className="animate-fade-in">
+          <NotificationSettings />
+        </TabsContent>
 
-              <div className="p-4 rounded-lg bg-muted/30 border border-dashed border-border">
-                <p className="text-sm text-muted-foreground text-center">
-                  More preferences coming soon! User accounts, cloud sync, and advanced settings.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+        {/* Shortcuts Tab */}
+        <TabsContent value="shortcuts" className="animate-fade-in">
+          <KeyboardShortcuts />
         </TabsContent>
       </Tabs>
     </div>
