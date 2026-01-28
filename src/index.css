@@ -6,105 +6,119 @@
 
 @layer base {
   :root {
-    /* Core backgrounds */
-    --background: 220 20% 8%;
-    --foreground: 180 100% 95%;
+    /* Core backgrounds - Cyberpunk with Silver/Grey accents */
+    --background: 220 15% 6%;
+    --foreground: 210 20% 90%;
 
-    /* Cards and surfaces */
-    --card: 220 25% 12%;
-    --card-foreground: 180 100% 95%;
+    /* Cards and surfaces - Steel/Gunmetal grey */
+    --card: 215 18% 10%;
+    --card-foreground: 210 20% 92%;
 
-    --popover: 220 25% 10%;
-    --popover-foreground: 180 100% 95%;
+    --popover: 215 18% 8%;
+    --popover-foreground: 210 20% 92%;
 
-    /* Neon Primary - Cyan */
-    --primary: 180 100% 50%;
-    --primary-foreground: 220 20% 8%;
+    /* Neon Primary - Electric Cyan */
+    --primary: 185 100% 50%;
+    --primary-foreground: 220 15% 6%;
 
-    /* Neon Secondary - Magenta */
-    --secondary: 300 100% 60%;
-    --secondary-foreground: 220 20% 8%;
+    /* Neon Secondary - Hot Pink/Magenta */
+    --secondary: 320 100% 60%;
+    --secondary-foreground: 220 15% 6%;
 
-    /* Muted tones */
-    --muted: 220 20% 18%;
-    --muted-foreground: 220 15% 55%;
+    /* Muted tones - Silver grey */
+    --muted: 215 15% 16%;
+    --muted-foreground: 215 12% 50%;
 
-    /* Neon Accent - Purple */
-    --accent: 270 100% 65%;
-    --accent-foreground: 220 20% 8%;
+    /* Neon Accent - Electric Purple */
+    --accent: 275 100% 60%;
+    --accent-foreground: 220 15% 6%;
 
     /* Destructive */
-    --destructive: 0 90% 55%;
+    --destructive: 0 85% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Borders and inputs */
-    --border: 220 20% 20%;
-    --input: 220 20% 15%;
-    --ring: 180 100% 50%;
+    /* Borders and inputs - Chrome/Silver */
+    --border: 215 12% 22%;
+    --input: 215 15% 14%;
+    --ring: 185 100% 50%;
 
     --radius: 0.75rem;
 
-    /* Neon glow colors */
-    --neon-cyan: 180 100% 50%;
-    --neon-magenta: 300 100% 60%;
-    --neon-purple: 270 100% 65%;
-    --neon-green: 150 100% 50%;
-    --neon-orange: 30 100% 55%;
+    /* Neon glow colors - Balanced cyberpunk palette */
+    --neon-cyan: 185 100% 50%;
+    --neon-magenta: 320 100% 60%;
+    --neon-purple: 275 100% 60%;
+    --neon-green: 160 100% 45%;
+    --neon-orange: 25 100% 55%;
 
-    /* Sidebar */
-    --sidebar-background: 220 25% 10%;
-    --sidebar-foreground: 180 100% 90%;
-    --sidebar-primary: 180 100% 50%;
-    --sidebar-primary-foreground: 220 20% 8%;
-    --sidebar-accent: 270 100% 65%;
-    --sidebar-accent-foreground: 220 20% 8%;
-    --sidebar-border: 220 20% 18%;
-    --sidebar-ring: 180 100% 50%;
+    /* Silver accent for highlights */
+    --silver: 210 10% 70%;
+    --chrome: 210 8% 55%;
+
+    /* Sidebar - Dark chrome */
+    --sidebar-background: 215 18% 8%;
+    --sidebar-foreground: 210 15% 85%;
+    --sidebar-primary: 185 100% 50%;
+    --sidebar-primary-foreground: 220 15% 6%;
+    --sidebar-accent: 275 100% 60%;
+    --sidebar-accent-foreground: 220 15% 6%;
+    --sidebar-border: 215 12% 18%;
+    --sidebar-ring: 185 100% 50%;
   }
 
   .light {
-    --background: 210 40% 98%;
-    --foreground: 220 20% 10%;
+    /* Warm cream/sepia background - easier on eyes */
+    --background: 35 25% 94%;
+    --foreground: 30 15% 15%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 220 20% 10%;
+    /* Cards - Warm white/cream */
+    --card: 40 30% 98%;
+    --card-foreground: 30 15% 15%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 10%;
+    --popover: 40 30% 98%;
+    --popover-foreground: 30 15% 15%;
 
-    --primary: 180 80% 40%;
+    /* Primary - Warm teal */
+    --primary: 175 60% 35%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 300 70% 50%;
+    /* Secondary - Warm rose */
+    --secondary: 340 50% 50%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 30% 92%;
-    --muted-foreground: 220 15% 40%;
+    /* Muted - Warm grey/taupe */
+    --muted: 35 15% 88%;
+    --muted-foreground: 30 10% 40%;
 
-    --accent: 270 80% 55%;
+    /* Accent - Warm purple */
+    --accent: 280 50% 50%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 80% 50%;
+    /* Destructive */
+    --destructive: 0 65% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 210 30% 85%;
-    --input: 210 30% 90%;
-    --ring: 180 80% 40%;
+    /* Borders - Warm beige */
+    --border: 35 20% 82%;
+    --input: 35 20% 90%;
+    --ring: 175 60% 35%;
 
-    --neon-cyan: 180 80% 40%;
-    --neon-magenta: 300 70% 50%;
-    --neon-purple: 270 80% 55%;
-    --neon-green: 150 70% 40%;
-    --neon-orange: 30 90% 50%;
+    /* Neon colors - Muted warm versions */
+    --neon-cyan: 175 60% 35%;
+    --neon-magenta: 340 50% 50%;
+    --neon-purple: 280 50% 50%;
+    --neon-green: 155 50% 40%;
+    --neon-orange: 25 70% 50%;
 
-    --sidebar-background: 210 40% 96%;
-    --sidebar-foreground: 220 20% 15%;
-    --sidebar-primary: 180 80% 40%;
+    /* Sidebar - Cream */
+    --sidebar-background: 35 20% 92%;
+    --sidebar-foreground: 30 15% 20%;
+    --sidebar-primary: 175 60% 35%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 270 80% 55%;
+    --sidebar-accent: 280 50% 50%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 210 30% 88%;
-    --sidebar-ring: 180 80% 40%;
+    --sidebar-border: 35 15% 85%;
+    --sidebar-ring: 175 60% 35%;
   }
 }
 

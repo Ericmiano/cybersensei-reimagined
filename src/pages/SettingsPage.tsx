@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Sliders, Palette, User, Bell, Keyboard as KeyboardIcon, Save, RotateCcw, Sparkles } from "lucide-react";
+import { useState, lazy, Suspense } from "react";
+import { Sliders, Palette, User, Bell, Keyboard as KeyboardIcon, Save, RotateCcw, Sparkles, Upload } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -9,9 +9,21 @@ import { useTheme, AgentPersonality } from "@/contexts/ThemeContext";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
 import { AnimatedSlider } from "@/components/ui/animated-slider";
-import UserProfileSettings from "@/components/settings/UserProfileSettings";
-import NotificationSettings from "@/components/settings/NotificationSettings";
-import KeyboardShortcuts from "@/components/settings/KeyboardShortcuts";
+import { Skeleton } from "@/components/ui/skeleton";
+
+// Lazy load heavy components for better performance
+const UserProfileSettings = lazy(() => import("@/components/settings/UserProfileSettings"));
+const NotificationSettings = lazy(() => import("@/components/settings/NotificationSettings"));
+const KeyboardShortcuts = lazy(() => import("@/components/settings/KeyboardShortcuts"));
+const ContentIngestion = lazy(() => import("@/components/content/ContentIngestion"));
+
+const LoadingFallback = () => (
+  <div className="space-y-4">
+    <Skeleton className="h-12 w-full" />
+    <Skeleton className="h-32 w-full" />
+    <Skeleton className="h-24 w-full" />
+  </div>
+);
 
 const personalityConfig = {
   formality: { 
@@ -113,7 +125,7 @@ export default function SettingsPage() {
       </div>
 
       <Tabs defaultValue="personality" className="space-y-6">
-        <TabsList className="bg-muted/50 p-1 gap-1">
+        <TabsList className="bg-muted/50 p-1 gap-1 flex-wrap h-auto">
           <TabsTrigger value="personality" className="gap-2 data-[state=active]:neon-glow-cyan">
             <Sliders className="h-4 w-4" />
             AI Personality
@@ -121,6 +133,10 @@ export default function SettingsPage() {
           <TabsTrigger value="appearance" className="gap-2 data-[state=active]:neon-glow-cyan">
             <Palette className="h-4 w-4" />
             Appearance
+          </TabsTrigger>
+          <TabsTrigger value="content" className="gap-2 data-[state=active]:neon-glow-cyan">
+            <Upload className="h-4 w-4" />
+            Content
           </TabsTrigger>
           <TabsTrigger value="profile" className="gap-2 data-[state=active]:neon-glow-cyan">
             <User className="h-4 w-4" />
@@ -326,19 +342,32 @@ export default function SettingsPage() {
           </Card>
         </TabsContent>
 
+        {/* Content Ingestion Tab */}
+        <TabsContent value="content" className="animate-fade-in">
+          <Suspense fallback={<LoadingFallback />}>
+            <ContentIngestion />
+          </Suspense>
+        </TabsContent>
+
         {/* Profile Tab */}
         <TabsContent value="profile" className="animate-fade-in">
-          <UserProfileSettings />
+          <Suspense fallback={<LoadingFallback />}>
+            <UserProfileSettings />
+          </Suspense>
         </TabsContent>
 
         {/* Notifications Tab */}
         <TabsContent value="notifications" className="animate-fade-in">
-          <NotificationSettings />
+          <Suspense fallback={<LoadingFallback />}>
+            <NotificationSettings />
+          </Suspense>
         </TabsContent>
 
         {/* Shortcuts Tab */}
         <TabsContent value="shortcuts" className="animate-fade-in">
-          <KeyboardShortcuts />
+          <Suspense fallback={<LoadingFallback />}>
+            <KeyboardShortcuts />
+          </Suspense>
         </TabsContent>
       </Tabs>
     </div>
