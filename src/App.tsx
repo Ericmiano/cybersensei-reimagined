@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { UserProgressProvider } from "@/contexts/UserProgressContext";
 import { ChatHistoryProvider } from "@/contexts/ChatHistoryContext";
+import { AuthProvider } from "@/contexts/AuthContext";
 import { AppLayout } from "@/components/layout/AppLayout";
 import AchievementToast from "@/components/gamification/AchievementToast";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -23,6 +24,7 @@ const LessonPage = lazy(() => import("./pages/LessonPage"));
 const DashboardPage = lazy(() => import("./pages/DashboardPage"));
 const AnalyticsPage = lazy(() => import("./pages/AnalyticsPage"));
 const SettingsPage = lazy(() => import("./pages/SettingsPage"));
+const AuthPage = lazy(() => import("./pages/AuthPage"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -46,35 +48,55 @@ const PageLoader = () => (
   </div>
 );
 
+// Auth page has its own layout
+const AuthPageWrapper = () => (
+  <Suspense fallback={<PageLoader />}>
+    <AuthPage />
+  </Suspense>
+);
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider>
-      <UserProgressProvider>
-        <ChatHistoryProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <AchievementToast />
-            <BrowserRouter>
-              <AppLayout>
-                <Suspense fallback={<PageLoader />}>
-                  <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/chat" element={<ChatPage />} />
-                    <Route path="/training" element={<TrainingPage />} />
-                    <Route path="/training/:moduleId" element={<ModuleDetailPage />} />
-                    <Route path="/training/:moduleId/lesson/:lessonId" element={<LessonPage />} />
-                    <Route path="/dashboard" element={<DashboardPage />} />
-                    <Route path="/analytics" element={<AnalyticsPage />} />
-                    <Route path="/settings" element={<SettingsPage />} />
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </Suspense>
-              </AppLayout>
-            </BrowserRouter>
-          </TooltipProvider>
-        </ChatHistoryProvider>
-      </UserProgressProvider>
+      <AuthProvider>
+        <UserProgressProvider>
+          <ChatHistoryProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <AchievementToast />
+              <BrowserRouter>
+                <Routes>
+                  {/* Auth page without AppLayout */}
+                  <Route path="/auth" element={<AuthPageWrapper />} />
+                  
+                  {/* All other routes with AppLayout */}
+                  <Route
+                    path="/*"
+                    element={
+                      <AppLayout>
+                        <Suspense fallback={<PageLoader />}>
+                          <Routes>
+                            <Route path="/" element={<Index />} />
+                            <Route path="/chat" element={<ChatPage />} />
+                            <Route path="/training" element={<TrainingPage />} />
+                            <Route path="/training/:moduleId" element={<ModuleDetailPage />} />
+                            <Route path="/training/:moduleId/lesson/:lessonId" element={<LessonPage />} />
+                            <Route path="/dashboard" element={<DashboardPage />} />
+                            <Route path="/analytics" element={<AnalyticsPage />} />
+                            <Route path="/settings" element={<SettingsPage />} />
+                            <Route path="*" element={<NotFound />} />
+                          </Routes>
+                        </Suspense>
+                      </AppLayout>
+                    }
+                  />
+                </Routes>
+              </BrowserRouter>
+            </TooltipProvider>
+          </ChatHistoryProvider>
+        </UserProgressProvider>
+      </AuthProvider>
     </ThemeProvider>
   </QueryClientProvider>
 );
