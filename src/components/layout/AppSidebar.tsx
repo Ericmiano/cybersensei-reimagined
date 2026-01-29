@@ -8,11 +8,15 @@ import {
   Moon, 
   Sun,
   Shield,
-  Zap
+  Zap,
+  LogIn,
+  LogOut,
+  User
 } from "lucide-react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   Sidebar,
   SidebarContent,
@@ -27,6 +31,13 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const mainNavItems = [
   { title: "Home", url: "/", icon: Home },
@@ -44,11 +55,18 @@ export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const location = useLocation();
+  const navigate = useNavigate();
   const { theme, toggleMode } = useTheme();
+  const { user, isAuthenticated, logout } = useAuth();
 
   const isActive = (path: string) => {
     if (path === "/") return location.pathname === "/";
     return location.pathname.startsWith(path);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
   };
 
   return (
@@ -159,7 +177,63 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="p-4 border-t border-border/30">
+      <SidebarFooter className="p-4 border-t border-border/30 space-y-2">
+        {/* User/Auth Section */}
+        {isAuthenticated && user ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size={collapsed ? "icon" : "default"}
+                className={cn(
+                  "w-full justify-start gap-2 hover:bg-primary/10",
+                  collapsed && "justify-center"
+                )}
+              >
+                <div className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center text-lg">
+                  {user.avatar}
+                </div>
+                {!collapsed && (
+                  <span className="truncate text-sm">{user.name}</span>
+                )}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent 
+              align="end" 
+              className="w-56 bg-card border-border/50"
+            >
+              <div className="px-2 py-1.5">
+                <p className="text-sm font-medium">{user.name}</p>
+                <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+              </div>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => navigate("/settings")}>
+                <User className="h-4 w-4 mr-2" />
+                Profile Settings
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleLogout} className="text-destructive">
+                <LogOut className="h-4 w-4 mr-2" />
+                Logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <Button
+            variant="ghost"
+            size={collapsed ? "icon" : "default"}
+            onClick={() => navigate("/auth")}
+            className={cn(
+              "w-full justify-center gap-2 hover:bg-primary/10",
+              "transition-all duration-200"
+            )}
+          >
+            <LogIn className="h-5 w-5 text-primary" />
+            {!collapsed && <span>Login</span>}
+          </Button>
+        )}
+
+        {/* Theme Toggle */}
         <Button
           variant="ghost"
           size={collapsed ? "icon" : "default"}

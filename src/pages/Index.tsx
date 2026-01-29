@@ -1,4 +1,4 @@
-import { Shield, Zap, MessageSquare, BookOpen, BarChart3, ArrowRight, PlayCircle, TrendingUp, Sparkles } from "lucide-react";
+import { Shield, Zap, MessageSquare, BookOpen, BarChart3, ArrowRight, PlayCircle, TrendingUp, Sparkles, LogIn } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,6 +6,29 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { useUserProgress } from "@/contexts/UserProgressContext";
+import { useAuth } from "@/contexts/AuthContext";
+
+// All available lessons across modules
+const ALL_LESSONS = [
+  { moduleId: "1", lessonId: "1-1", title: "Introduction to Cybersecurity" },
+  { moduleId: "1", lessonId: "1-2", title: "The CIA Triad" },
+  { moduleId: "1", lessonId: "1-3", title: "Types of Cyber Threats" },
+  { moduleId: "1", lessonId: "1-4", title: "Authentication & Access Control" },
+  { moduleId: "2", lessonId: "2-1", title: "Network Fundamentals" },
+  { moduleId: "2", lessonId: "2-2", title: "Firewalls & Packet Filtering" },
+  { moduleId: "4", lessonId: "4-1", title: "Introduction to Ethical Hacking" },
+  { moduleId: "4", lessonId: "4-2", title: "Vulnerability Scanning" },
+];
+
+const MODULE_NAMES: Record<string, string> = {
+  "1": "Cybersecurity Fundamentals",
+  "2": "Network Security",
+  "3": "Cryptography Essentials",
+  "4": "Ethical Hacking",
+  "5": "Secure Coding Practices",
+  "6": "Incident Response",
+  "7": "Cloud Security",
+};
 
 const features = [
   {
@@ -33,28 +56,40 @@ const features = [
 
 const Index = () => {
   const { progress } = useUserProgress();
+  const { isAuthenticated, user } = useAuth();
   
-  // Find the next lesson to continue
+  // Find the next incomplete lesson
   const getNextLesson = () => {
-    const inProgressModules = [
-      { moduleId: "1", moduleName: "Cybersecurity Fundamentals", lessonId: "1-1" },
-      { moduleId: "4", moduleName: "Ethical Hacking", lessonId: "4-1" },
-    ];
+    const completedIds = new Set(
+      progress.lessonsCompleted
+        .filter(l => l.completed)
+        .map(l => l.lessonId)
+    );
     
-    // Check user progress for incomplete lessons
-    for (const module of inProgressModules) {
-      const completedInModule = progress.lessonsCompleted.filter(
-        l => l.moduleId === module.moduleId && l.completed
-      );
-      if (completedInModule.length < 12) { // Less than total lessons
-        return module;
-      }
+    // Find first incomplete lesson
+    const nextLesson = ALL_LESSONS.find(lesson => !completedIds.has(lesson.lessonId));
+    
+    if (nextLesson) {
+      return {
+        moduleId: nextLesson.moduleId,
+        moduleName: MODULE_NAMES[nextLesson.moduleId] || "Training Module",
+        lessonId: nextLesson.lessonId,
+        lessonTitle: nextLesson.title,
+      };
     }
-    return inProgressModules[0];
+    
+    // If all completed, return first lesson for review
+    return {
+      moduleId: "1",
+      moduleName: "Cybersecurity Fundamentals",
+      lessonId: "1-1",
+      lessonTitle: "Introduction to Cybersecurity",
+    };
   };
 
   const nextLesson = getNextLesson();
   const completedLessons = progress.lessonsCompleted.filter(l => l.completed).length;
+  const totalLessons = ALL_LESSONS.length;
 
   return (
     <div className="min-h-full">
@@ -86,21 +121,39 @@ const Index = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              asChild
-              size="lg"
-              className={cn(
-                "font-cyber text-lg px-8 py-6",
-                "bg-primary hover:bg-primary/90",
-                "neon-glow-cyan transition-all duration-300",
-                "hover:scale-105"
-              )}
-            >
-              <Link to="/chat">
-                <MessageSquare className="mr-2 h-5 w-5" />
-                Start Training
-              </Link>
-            </Button>
+            {!isAuthenticated ? (
+              <Button
+                asChild
+                size="lg"
+                className={cn(
+                  "font-cyber text-lg px-8 py-6",
+                  "bg-primary hover:bg-primary/90",
+                  "neon-glow-cyan transition-all duration-300",
+                  "hover:scale-105"
+                )}
+              >
+                <Link to="/auth">
+                  <LogIn className="mr-2 h-5 w-5" />
+                  Get Started
+                </Link>
+              </Button>
+            ) : (
+              <Button
+                asChild
+                size="lg"
+                className={cn(
+                  "font-cyber text-lg px-8 py-6",
+                  "bg-primary hover:bg-primary/90",
+                  "neon-glow-cyan transition-all duration-300",
+                  "hover:scale-105"
+                )}
+              >
+                <Link to="/chat">
+                  <MessageSquare className="mr-2 h-5 w-5" />
+                  Start Training
+                </Link>
+              </Button>
+            )}
             <Button
               asChild
               variant="outline"
@@ -136,9 +189,10 @@ const Index = () => {
                     <div>
                       <p className="text-sm text-muted-foreground mb-1">Continue where you left off</p>
                       <h3 className="font-cyber text-lg text-primary">{nextLesson.moduleName}</h3>
+                      <p className="text-sm text-muted-foreground">{nextLesson.lessonTitle}</p>
                       <div className="flex items-center gap-2 mt-1">
-                        <Progress value={(completedLessons / 50) * 100} className="w-32 h-2" />
-                        <span className="text-xs text-muted-foreground">{completedLessons} lessons completed</span>
+                        <Progress value={(completedLessons / totalLessons) * 100} className="w-32 h-2" />
+                        <span className="text-xs text-muted-foreground">{completedLessons}/{totalLessons} lessons</span>
                       </div>
                     </div>
                   </div>
@@ -167,7 +221,7 @@ const Index = () => {
               ].map((stat, index) => (
                 <Card
                   key={stat.label}
-                  className="bg-card/30 border-border/30 p-4 text-center animate-slide-up"
+                  className="bg-card/30 border-border/30 p-4 text-center animate-slide-up hover-lift"
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
                   <stat.icon className="h-5 w-5 text-primary mx-auto mb-2" />
@@ -196,7 +250,7 @@ const Index = () => {
                   "group relative overflow-hidden",
                   "bg-card/50 backdrop-blur-sm",
                   "border-border/50 hover:border-primary/50",
-                  "transition-all duration-300 hover:-translate-y-2",
+                  "transition-all duration-300 hover:-translate-y-2 hover-lift",
                   "animate-slide-up"
                 )}
                 style={{ animationDelay: `${index * 100}ms` }}
