@@ -131,34 +131,36 @@ export default function ChatPage() {
   return (
     <div className="h-[calc(100vh-3.5rem)] flex flex-col">
       {/* Chat Header */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-border/30 bg-card/30 backdrop-blur-sm">
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <Bot className="h-8 w-8 text-primary" />
-            <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-neon-green rounded-full animate-pulse" />
+      <div className="flex items-center justify-between px-3 sm:px-6 py-3 sm:py-4 border-b border-border/30 bg-card/30 backdrop-blur-sm gap-2">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+          <div className="relative flex-shrink-0">
+            <Bot className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
+            <div className="absolute -bottom-0.5 -right-0.5 w-2 h-2 sm:w-3 sm:h-3 bg-neon-green rounded-full animate-pulse" />
           </div>
-          <div>
-            <h1 className="font-cyber text-lg font-bold text-primary">CYBER SENSEI</h1>
-            <p className="text-xs text-muted-foreground">AI Cybersecurity Mentor • Online</p>
+          <div className="min-w-0">
+            <h1 className="font-cyber text-sm sm:text-lg font-bold text-primary truncate">CYBER SENSEI</h1>
+            <p className="text-[10px] sm:text-xs text-muted-foreground hidden xs:block">AI Mentor • Online</p>
           </div>
         </div>
-        <div className="flex items-center gap-4">
-          <StreakDisplay variant="compact" />
+        <div className="flex items-center gap-1 sm:gap-4 flex-shrink-0">
+          <div className="hidden sm:block">
+            <StreakDisplay variant="compact" />
+          </div>
           <Button
             variant="ghost"
             size="sm"
             onClick={handleClearChat}
-            className="text-muted-foreground hover:text-primary"
+            className="text-muted-foreground hover:text-primary h-8 px-2 sm:px-3"
           >
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Clear Chat
+            <RefreshCw className="h-4 w-4 sm:mr-2" />
+            <span className="hidden sm:inline">Clear Chat</span>
           </Button>
         </div>
       </div>
 
       {/* Messages Area */}
-      <ScrollArea className="flex-1 p-6" ref={scrollRef}>
-        <div className="max-w-3xl mx-auto space-y-6">
+      <ScrollArea className="flex-1 p-3 sm:p-6" ref={scrollRef}>
+        <div className="max-w-3xl mx-auto space-y-4 sm:space-y-6">
           {messages.map((message, index) => (
             <div
               key={message.id}
@@ -171,31 +173,31 @@ export default function ChatPage() {
               {/* Avatar */}
               <div
                 className={cn(
-                  "flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center",
+                  "flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center",
                   message.role === "assistant"
                     ? "bg-primary/20 neon-glow-cyan"
                     : "bg-secondary/20 neon-glow-magenta"
                 )}
               >
                 {message.role === "assistant" ? (
-                  <Bot className="h-5 w-5 text-primary" />
+                  <Bot className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                 ) : (
-                  <User className="h-5 w-5 text-secondary" />
+                  <User className="h-4 w-4 sm:h-5 sm:w-5 text-secondary" />
                 )}
               </div>
 
               {/* Message Bubble */}
               <Card
                 className={cn(
-                  "max-w-[80%] p-4",
+                  "max-w-[85%] sm:max-w-[80%] p-3 sm:p-4",
                   "bg-card/50 backdrop-blur-sm",
                   message.role === "assistant"
                     ? "border-primary/20"
                     : "border-secondary/20"
                 )}
               >
-                <p className="text-foreground whitespace-pre-wrap">{message.content}</p>
-                <span className="text-xs text-muted-foreground mt-2 block">
+                <p className="text-sm sm:text-base text-foreground whitespace-pre-wrap">{message.content}</p>
+                <span className="text-[10px] sm:text-xs text-muted-foreground mt-1.5 sm:mt-2 block">
                   {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </span>
               </Card>
@@ -225,7 +227,7 @@ export default function ChatPage() {
       </ScrollArea>
 
       {/* Input Area */}
-      <div className="border-t border-border/30 p-4 bg-card/30 backdrop-blur-sm">
+      <div className="border-t border-border/30 p-3 sm:p-4 bg-card/30 backdrop-blur-sm">
         <form onSubmit={handleSubmit} className="max-w-3xl mx-auto">
           <div className="relative flex items-end gap-2">
             <Textarea
@@ -235,7 +237,7 @@ export default function ChatPage() {
               onKeyDown={handleKeyDown}
               placeholder="Ask your Cyber Sensei anything..."
               className={cn(
-                "min-h-[60px] max-h-[200px] resize-none pr-12",
+                "min-h-[50px] sm:min-h-[60px] max-h-[150px] sm:max-h-[200px] resize-none pr-12 text-sm sm:text-base",
                 "bg-background/50 border-border/50",
                 "focus:border-primary focus:ring-primary/20",
                 "placeholder:text-muted-foreground/50"
@@ -247,7 +249,7 @@ export default function ChatPage() {
               size="icon"
               disabled={!input.trim() || isTyping}
               className={cn(
-                "absolute right-2 bottom-2",
+                "absolute right-2 bottom-2 h-8 w-8 sm:h-10 sm:w-10",
                 "bg-primary hover:bg-primary/90",
                 "disabled:opacity-50",
                 "neon-glow-cyan transition-all"
@@ -256,7 +258,7 @@ export default function ChatPage() {
               <Send className="h-4 w-4" />
             </Button>
           </div>
-          <p className="text-xs text-muted-foreground mt-2 text-center">
+          <p className="text-[10px] sm:text-xs text-muted-foreground mt-2 text-center">
             Press Enter to send, Shift+Enter for new line
           </p>
         </form>
