@@ -8,6 +8,7 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import { UserProgressProvider } from "@/contexts/UserProgressContext";
 import { ChatHistoryProvider } from "@/contexts/ChatHistoryContext";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { TutorialProvider } from "@/contexts/TutorialContext";
 import { AppLayout } from "@/components/layout/AppLayout";
 import AchievementToast from "@/components/gamification/AchievementToast";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -37,13 +38,13 @@ const queryClient = new QueryClient({
 
 // Loading fallback component
 const PageLoader = () => (
-  <div className="p-6 space-y-4 animate-fade-in">
-    <Skeleton className="h-12 w-64" />
-    <Skeleton className="h-6 w-96" />
-    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
-      <Skeleton className="h-48 w-full" />
-      <Skeleton className="h-48 w-full" />
-      <Skeleton className="h-48 w-full" />
+  <div className="p-4 sm:p-6 space-y-4 animate-fade-in">
+    <Skeleton className="h-10 sm:h-12 w-48 sm:w-64" />
+    <Skeleton className="h-5 sm:h-6 w-72 sm:w-96" />
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6 sm:mt-8">
+      <Skeleton className="h-40 sm:h-48 w-full" />
+      <Skeleton className="h-40 sm:h-48 w-full hidden sm:block" />
+      <Skeleton className="h-40 sm:h-48 w-full hidden lg:block" />
     </div>
   </div>
 );
@@ -61,39 +62,41 @@ const App = () => (
       <AuthProvider>
         <UserProgressProvider>
           <ChatHistoryProvider>
-            <TooltipProvider>
-              <Toaster />
-              <Sonner />
-              <AchievementToast />
-              <BrowserRouter>
-                <Routes>
-                  {/* Auth page without AppLayout */}
-                  <Route path="/auth" element={<AuthPageWrapper />} />
-                  
-                  {/* All other routes with AppLayout */}
-                  <Route
-                    path="/*"
-                    element={
-                      <AppLayout>
-                        <Suspense fallback={<PageLoader />}>
-                          <Routes>
-                            <Route path="/" element={<Index />} />
-                            <Route path="/chat" element={<ChatPage />} />
-                            <Route path="/training" element={<TrainingPage />} />
-                            <Route path="/training/:moduleId" element={<ModuleDetailPage />} />
-                            <Route path="/training/:moduleId/lesson/:lessonId" element={<LessonPage />} />
-                            <Route path="/dashboard" element={<DashboardPage />} />
-                            <Route path="/analytics" element={<AnalyticsPage />} />
-                            <Route path="/settings" element={<SettingsPage />} />
-                            <Route path="*" element={<NotFound />} />
-                          </Routes>
-                        </Suspense>
-                      </AppLayout>
-                    }
-                  />
-                </Routes>
-              </BrowserRouter>
-            </TooltipProvider>
+            <TutorialProvider>
+              <TooltipProvider>
+                <Toaster />
+                <Sonner />
+                <AchievementToast />
+                <BrowserRouter>
+                  <Routes>
+                    {/* Auth page without AppLayout */}
+                    <Route path="/auth" element={<AuthPageWrapper />} />
+                    
+                    {/* All other routes with AppLayout */}
+                    <Route
+                      path="/*"
+                      element={
+                        <AppLayout>
+                          <Suspense fallback={<PageLoader />}>
+                            <Routes>
+                              <Route path="/" element={<Index />} />
+                              <Route path="/chat" element={<ChatPage />} />
+                              <Route path="/training" element={<TrainingPage />} />
+                              <Route path="/training/:moduleId" element={<ModuleDetailPage />} />
+                              <Route path="/training/:moduleId/lesson/:lessonId" element={<LessonPage />} />
+                              <Route path="/dashboard" element={<DashboardPage />} />
+                              <Route path="/analytics" element={<AnalyticsPage />} />
+                              <Route path="/settings" element={<SettingsPage />} />
+                              <Route path="*" element={<NotFound />} />
+                            </Routes>
+                          </Suspense>
+                        </AppLayout>
+                      }
+                    />
+                  </Routes>
+                </BrowserRouter>
+              </TooltipProvider>
+            </TutorialProvider>
           </ChatHistoryProvider>
         </UserProgressProvider>
       </AuthProvider>

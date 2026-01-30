@@ -162,58 +162,54 @@ export default function TrainingPage() {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-7xl mx-auto">
       {/* Header */}
-      <div className="mb-8 animate-slide-up">
-        <h1 className="font-cyber text-3xl font-bold mb-2 flex items-center gap-3">
+      <div className="mb-6 sm:mb-8 animate-slide-up">
+        <h1 className="font-cyber text-2xl sm:text-3xl font-bold mb-2 flex flex-wrap items-center gap-2 sm:gap-3">
           <span className="text-primary animate-text-glow">TRAINING</span>
           <span className="text-muted-foreground">MODULES</span>
-          <Sparkles className="h-6 w-6 text-secondary animate-pulse-glow" />
+          <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-secondary animate-pulse-glow" />
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-sm sm:text-base text-muted-foreground">
           Master cybersecurity through structured learning paths and hands-on challenges.
         </p>
       </div>
 
       {/* Progress Overview */}
-      <Card className="mb-8 bg-card/50 border-border/50 neon-border interactive-card overflow-hidden">
+      <Card className="mb-6 sm:mb-8 bg-card/50 border-border/50 neon-border interactive-card overflow-hidden">
         <div className="h-1 bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-magenta animate-border-flow" />
-        <CardContent className="p-6">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center animate-float">
-                <TrendingUp className="h-6 w-6 text-primary" />
+        <CardContent className="p-4 sm:p-6">
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-primary/20 flex items-center justify-center animate-float flex-shrink-0">
+                <TrendingUp className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
               </div>
-              <div>
-                <h3 className="font-cyber text-lg text-primary">OVERALL PROGRESS</h3>
-                <p className="text-sm text-muted-foreground">
+              <div className="flex-1 min-w-0">
+                <h3 className="font-cyber text-base sm:text-lg text-primary truncate">OVERALL PROGRESS</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground">
                   {modules.filter((m) => m.status === "completed").length} of {modules.length} modules completed
                 </p>
               </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="flex-1 md:w-48">
-                <Progress value={totalProgress} className="h-3 bg-muted" />
-              </div>
-              <span className="font-cyber text-2xl text-primary neon-text-cyan animate-glow-pulse">
+              <span className="font-cyber text-xl sm:text-2xl text-primary neon-text-cyan animate-glow-pulse flex-shrink-0">
                 {totalProgress}%
               </span>
             </div>
+            <Progress value={totalProgress} className="h-2 sm:h-3 bg-muted" />
           </div>
           
           {/* Quick stats */}
-          <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-border/30">
+          <div className="grid grid-cols-3 gap-2 sm:gap-4 mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-border/30">
             {[
-              { label: "Lessons Completed", value: progress.lessonsCompleted.filter(l => l.completed).length, icon: BookOpen },
-              { label: "Total XP Earned", value: progress.xp, icon: Zap },
-              { label: "Current Streak", value: `${progress.currentStreak} days`, icon: Star },
+              { label: "Lessons", value: progress.lessonsCompleted.filter(l => l.completed).length, icon: BookOpen },
+              { label: "XP", value: progress.xp, icon: Zap },
+              { label: "Streak", value: `${progress.currentStreak}d`, icon: Star },
             ].map((stat, i) => (
               <div key={stat.label} className="text-center animate-slide-up" style={{ animationDelay: `${i * 100}ms` }}>
-                <div className="flex justify-center mb-2">
-                  <stat.icon className="h-5 w-5 text-primary" />
+                <div className="flex justify-center mb-1 sm:mb-2">
+                  <stat.icon className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                 </div>
-                <div className="font-cyber text-xl text-primary">{stat.value}</div>
-                <div className="text-xs text-muted-foreground">{stat.label}</div>
+                <div className="font-cyber text-lg sm:text-xl text-primary">{stat.value}</div>
+                <div className="text-[10px] sm:text-xs text-muted-foreground">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -221,15 +217,15 @@ export default function TrainingPage() {
       </Card>
 
       {/* Category Tabs */}
-      <Tabs value={activeCategory} onValueChange={setActiveCategory} className="mb-6">
-        <TabsList className="bg-muted/50 flex-wrap h-auto gap-1 p-1">
+      <Tabs value={activeCategory} onValueChange={setActiveCategory} className="mb-4 sm:mb-6">
+        <TabsList className="bg-muted/50 flex flex-wrap h-auto gap-1 p-1 w-full justify-start overflow-x-auto">
           {categories.map((category) => (
             <TabsTrigger
               key={category.id}
               value={category.id}
               className={cn(
                 "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground",
-                "transition-all duration-200"
+                "transition-all duration-200 text-xs sm:text-sm whitespace-nowrap"
               )}
             >
               {category.label}
@@ -239,7 +235,7 @@ export default function TrainingPage() {
       </Tabs>
 
       {/* Modules Grid */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {filteredModules.map((module, index) => {
           const userProgress = getModuleProgress(module.id);
           const effectiveCompleted = Math.max(module.completedLessons, userProgress);

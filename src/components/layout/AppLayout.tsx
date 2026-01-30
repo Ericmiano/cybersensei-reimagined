@@ -2,6 +2,8 @@ import { ReactNode } from "react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
 import { cn } from "@/lib/utils";
+import TutorialOverlay from "@/components/tutorial/TutorialOverlay";
+import TutorialTrigger from "@/components/tutorial/TutorialTrigger";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -12,11 +14,11 @@ export function AppLayout({ children }: AppLayoutProps) {
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background cyber-grid">
         <AppSidebar />
-        <div className="flex-1 flex flex-col min-h-screen">
-          <header className="h-14 flex items-center px-4 border-b border-border/30 bg-background/50 backdrop-blur-md sticky top-0 z-40">
+        <div className="flex-1 flex flex-col min-h-screen min-w-0">
+          <header className="h-14 flex items-center px-3 sm:px-4 border-b border-border/30 bg-background/50 backdrop-blur-md sticky top-0 z-40">
             <SidebarTrigger className="hover:bg-primary/10 hover:text-primary transition-colors" />
-            <div className="ml-auto flex items-center gap-4">
-              {/* Future: User menu, notifications */}
+            <div className="ml-auto flex items-center gap-2 sm:gap-4">
+              <TutorialTrigger />
             </div>
           </header>
           <main className="flex-1 overflow-auto">
@@ -28,6 +30,7 @@ export function AppLayout({ children }: AppLayoutProps) {
             </div>
           </main>
         </div>
+        <TutorialOverlay />
       </div>
     </SidebarProvider>
   );

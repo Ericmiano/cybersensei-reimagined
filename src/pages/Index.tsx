@@ -94,46 +94,46 @@ const Index = () => {
   return (
     <div className="min-h-full">
       {/* Hero Section */}
-      <section className="relative py-20 px-6 overflow-hidden">
+      <section className="relative py-12 sm:py-20 px-4 sm:px-6 overflow-hidden">
         {/* Background effects */}
         <div className="absolute inset-0 gradient-cyber opacity-50" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] bg-primary/5 rounded-full blur-3xl" />
         
         <div className="relative max-w-4xl mx-auto text-center">
           {/* Logo */}
-          <div className="flex justify-center mb-8">
+          <div className="flex justify-center mb-6 sm:mb-8">
             <div className="relative animate-float">
               <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full scale-150" />
-              <Shield className="relative h-24 w-24 text-primary animate-pulse-glow" />
-              <Zap className="absolute -bottom-2 -right-2 h-10 w-10 text-secondary animate-neon-flicker" />
+              <Shield className="relative h-16 w-16 sm:h-24 sm:w-24 text-primary animate-pulse-glow" />
+              <Zap className="absolute -bottom-1 sm:-bottom-2 -right-1 sm:-right-2 h-7 w-7 sm:h-10 sm:w-10 text-secondary animate-neon-flicker" />
             </div>
           </div>
 
           {/* Title */}
-          <h1 className="font-cyber text-5xl md:text-7xl font-bold mb-4 tracking-wider">
+          <h1 className="font-cyber text-3xl sm:text-5xl md:text-7xl font-bold mb-3 sm:mb-4 tracking-wider">
             <span className="text-primary neon-text-cyan">CYBER</span>
-            <span className="text-secondary neon-text-magenta ml-4">SENSEI</span>
+            <span className="text-secondary neon-text-magenta ml-2 sm:ml-4">SENSEI</span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+          <p className="text-base sm:text-xl md:text-2xl text-muted-foreground mb-6 sm:mb-8 max-w-2xl mx-auto px-2">
             Your AI-powered cybersecurity mentor. Learn, train, and master the art of digital defense.
           </p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
             {!isAuthenticated ? (
               <Button
                 asChild
                 size="lg"
                 className={cn(
-                  "font-cyber text-lg px-8 py-6",
+                  "font-cyber text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6",
                   "bg-primary hover:bg-primary/90",
                   "neon-glow-cyan transition-all duration-300",
                   "hover:scale-105"
                 )}
               >
                 <Link to="/auth">
-                  <LogIn className="mr-2 h-5 w-5" />
+                  <LogIn className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                   Get Started
                 </Link>
               </Button>
@@ -142,14 +142,14 @@ const Index = () => {
                 asChild
                 size="lg"
                 className={cn(
-                  "font-cyber text-lg px-8 py-6",
+                  "font-cyber text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6",
                   "bg-primary hover:bg-primary/90",
                   "neon-glow-cyan transition-all duration-300",
                   "hover:scale-105"
                 )}
               >
                 <Link to="/chat">
-                  <MessageSquare className="mr-2 h-5 w-5" />
+                  <MessageSquare className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                   Start Training
                 </Link>
               </Button>
@@ -159,14 +159,14 @@ const Index = () => {
               variant="outline"
               size="lg"
               className={cn(
-                "font-cyber text-lg px-8 py-6",
+                "font-cyber text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6",
                 "border-secondary/50 hover:border-secondary",
                 "hover:bg-secondary/10 hover:text-secondary",
                 "transition-all duration-300"
               )}
             >
               <Link to="/training">
-                <BookOpen className="mr-2 h-5 w-5" />
+                <BookOpen className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                 Browse Modules
               </Link>
             </Button>
@@ -235,14 +235,14 @@ const Index = () => {
       )}
 
       {/* Features Section */}
-      <section className="py-16 px-6">
+      <section className="py-12 sm:py-16 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
-          <h2 className="font-cyber text-3xl text-center mb-12 text-foreground">
+          <h2 className="font-cyber text-2xl sm:text-3xl text-center mb-8 sm:mb-12 text-foreground">
             <span className="text-primary">SYSTEM</span>
             <span className="text-muted-foreground ml-2">CAPABILITIES</span>
           </h2>
           
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
             {features.map((feature, index) => (
               <Card
                 key={feature.title}
@@ -257,23 +257,23 @@ const Index = () => {
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                 
-                <CardHeader>
+                <CardHeader className="p-4 sm:p-6">
                   <div className={cn(
-                    "w-12 h-12 rounded-lg flex items-center justify-center mb-4",
+                    "w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center mb-3 sm:mb-4",
                     "bg-primary/10 group-hover:bg-primary/20",
                     "transition-colors duration-300"
                   )}>
-                    <feature.icon className="h-6 w-6 text-primary group-hover:scale-110 transition-transform" />
+                    <feature.icon className="h-5 w-5 sm:h-6 sm:w-6 text-primary group-hover:scale-110 transition-transform" />
                   </div>
-                  <CardTitle className="font-cyber text-xl group-hover:text-primary transition-colors">
+                  <CardTitle className="font-cyber text-lg sm:text-xl group-hover:text-primary transition-colors">
                     {feature.title}
                   </CardTitle>
-                  <CardDescription className="text-muted-foreground">
+                  <CardDescription className="text-sm text-muted-foreground">
                     {feature.description}
                   </CardDescription>
                 </CardHeader>
                 
-                <CardContent>
+                <CardContent className="p-4 sm:p-6 pt-0">
                   <Link
                     to={feature.link}
                     className={cn(
@@ -293,9 +293,9 @@ const Index = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 px-6 border-t border-border/30">
+      <section className="py-12 sm:py-16 px-4 sm:px-6 border-t border-border/30">
         <div className="max-w-4xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 text-center">
             {[
               { value: "50+", label: "Training Modules" },
               { value: "1000+", label: "Questions" },
@@ -307,10 +307,10 @@ const Index = () => {
                 className="animate-slide-up"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <div className="font-cyber text-3xl md:text-4xl font-bold text-primary neon-text-cyan mb-2">
+                <div className="font-cyber text-2xl sm:text-3xl md:text-4xl font-bold text-primary neon-text-cyan mb-1 sm:mb-2">
                   {stat.value}
                 </div>
-                <div className="text-sm text-muted-foreground uppercase tracking-wider">
+                <div className="text-[10px] sm:text-sm text-muted-foreground uppercase tracking-wider">
                   {stat.label}
                 </div>
               </div>

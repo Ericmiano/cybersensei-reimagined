@@ -69,6 +69,13 @@ export function AppSidebar() {
     navigate("/");
   };
 
+  // Tutorial target IDs for specific nav items
+  const tutorialTargets: Record<string, string> = {
+    "/dashboard": "dashboard-link",
+    "/chat": "chat-link",
+    "/training": "training-link",
+  };
+
   return (
     <Sidebar 
       className={cn(
@@ -76,6 +83,7 @@ export function AppSidebar() {
         "bg-sidebar/80 backdrop-blur-xl"
       )}
       collapsible="icon"
+      data-tutorial="sidebar"
     >
       <SidebarHeader className="p-4 border-b border-border/30">
         <div className={cn(
@@ -114,6 +122,7 @@ export function AppSidebar() {
                   <SidebarMenuButton asChild>
                     <NavLink
                       to={item.url}
+                      data-tutorial={tutorialTargets[item.url]}
                       className={cn(
                         "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200",
                         "hover:bg-primary/10 hover:text-primary",
