@@ -2,123 +2,123 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Cyber Sensei - Cyberpunk/Neon Design System */
+/* Cyber Sensei - Silver Chrome Design System */
 
 @layer base {
   :root {
-    /* Core backgrounds - Cyberpunk with Silver/Grey accents */
-    --background: 220 15% 6%;
-    --foreground: 210 20% 90%;
+    /* Core backgrounds - Dark gunmetal */
+    --background: 220 10% 8%;
+    --foreground: 220 10% 92%;
 
-    /* Cards and surfaces - Steel/Gunmetal grey */
-    --card: 215 18% 10%;
-    --card-foreground: 210 20% 92%;
+    /* Cards and surfaces - Steel grey */
+    --card: 220 8% 12%;
+    --card-foreground: 220 10% 94%;
 
-    --popover: 215 18% 8%;
-    --popover-foreground: 210 20% 92%;
+    --popover: 220 8% 10%;
+    --popover-foreground: 220 10% 94%;
 
-    /* Neon Primary - Electric Cyan */
-    --primary: 185 100% 50%;
-    --primary-foreground: 220 15% 6%;
+    /* Primary - Bright Silver/White */
+    --primary: 220 15% 85%;
+    --primary-foreground: 220 10% 8%;
 
-    /* Neon Secondary - Hot Pink/Magenta */
-    --secondary: 320 100% 60%;
-    --secondary-foreground: 220 15% 6%;
+    /* Secondary - Cool Steel */
+    --secondary: 215 12% 45%;
+    --secondary-foreground: 220 10% 95%;
 
-    /* Muted tones - Silver grey */
-    --muted: 215 15% 16%;
-    --muted-foreground: 215 12% 50%;
+    /* Muted tones - Dark steel */
+    --muted: 220 8% 18%;
+    --muted-foreground: 220 8% 55%;
 
-    /* Neon Accent - Electric Purple */
-    --accent: 275 100% 60%;
-    --accent-foreground: 220 15% 6%;
+    /* Accent - Chrome highlight */
+    --accent: 220 15% 70%;
+    --accent-foreground: 220 10% 8%;
 
     /* Destructive */
-    --destructive: 0 85% 50%;
+    --destructive: 0 65% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Borders and inputs - Chrome/Silver */
-    --border: 215 12% 22%;
-    --input: 215 15% 14%;
-    --ring: 185 100% 50%;
+    /* Borders and inputs - Steel borders */
+    --border: 220 8% 25%;
+    --input: 220 8% 15%;
+    --ring: 220 15% 75%;
 
     --radius: 0.75rem;
 
-    /* Neon glow colors - Balanced cyberpunk palette */
-    --neon-cyan: 185 100% 50%;
-    --neon-magenta: 320 100% 60%;
-    --neon-purple: 275 100% 60%;
-    --neon-green: 160 100% 45%;
-    --neon-orange: 25 100% 55%;
+    /* Silver glow colors - Monochromatic palette */
+    --neon-cyan: 220 15% 80%;
+    --neon-magenta: 220 12% 65%;
+    --neon-purple: 220 10% 55%;
+    --neon-green: 150 30% 50%;
+    --neon-orange: 30 60% 55%;
 
     /* Silver accent for highlights */
-    --silver: 210 10% 70%;
-    --chrome: 210 8% 55%;
+    --silver: 220 12% 75%;
+    --chrome: 220 10% 60%;
 
     /* Sidebar - Dark chrome */
-    --sidebar-background: 215 18% 8%;
-    --sidebar-foreground: 210 15% 85%;
-    --sidebar-primary: 185 100% 50%;
-    --sidebar-primary-foreground: 220 15% 6%;
-    --sidebar-accent: 275 100% 60%;
-    --sidebar-accent-foreground: 220 15% 6%;
-    --sidebar-border: 215 12% 18%;
-    --sidebar-ring: 185 100% 50%;
+    --sidebar-background: 220 8% 10%;
+    --sidebar-foreground: 220 10% 88%;
+    --sidebar-primary: 220 15% 85%;
+    --sidebar-primary-foreground: 220 10% 8%;
+    --sidebar-accent: 220 12% 65%;
+    --sidebar-accent-foreground: 220 10% 8%;
+    --sidebar-border: 220 8% 20%;
+    --sidebar-ring: 220 15% 75%;
   }
 
   .light {
-    /* Warm cream/sepia background - easier on eyes */
-    --background: 35 25% 94%;
-    --foreground: 30 15% 15%;
+    /* Cool silver-grey background */
+    --background: 220 15% 96%;
+    --foreground: 220 15% 15%;
 
-    /* Cards - Warm white/cream */
-    --card: 40 30% 98%;
-    --card-foreground: 30 15% 15%;
+    /* Cards - Clean white with subtle grey */
+    --card: 220 20% 99%;
+    --card-foreground: 220 15% 15%;
 
-    --popover: 40 30% 98%;
-    --popover-foreground: 30 15% 15%;
+    --popover: 220 20% 99%;
+    --popover-foreground: 220 15% 15%;
 
-    /* Primary - Warm teal */
-    --primary: 175 60% 35%;
+    /* Primary - Dark steel */
+    --primary: 220 15% 25%;
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary - Warm rose */
-    --secondary: 340 50% 50%;
+    /* Secondary - Medium grey */
+    --secondary: 220 10% 50%;
     --secondary-foreground: 0 0% 100%;
 
-    /* Muted - Warm grey/taupe */
-    --muted: 35 15% 88%;
-    --muted-foreground: 30 10% 40%;
+    /* Muted - Light silver */
+    --muted: 220 12% 92%;
+    --muted-foreground: 220 10% 45%;
 
-    /* Accent - Warm purple */
-    --accent: 280 50% 50%;
+    /* Accent - Steel blue-grey */
+    --accent: 220 12% 40%;
     --accent-foreground: 0 0% 100%;
 
     /* Destructive */
     --destructive: 0 65% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Borders - Warm beige */
-    --border: 35 20% 82%;
-    --input: 35 20% 90%;
-    --ring: 175 60% 35%;
+    /* Borders - Silver grey */
+    --border: 220 12% 85%;
+    --input: 220 12% 92%;
+    --ring: 220 15% 35%;
 
-    /* Neon colors - Muted warm versions */
-    --neon-cyan: 175 60% 35%;
-    --neon-magenta: 340 50% 50%;
-    --neon-purple: 280 50% 50%;
-    --neon-green: 155 50% 40%;
-    --neon-orange: 25 70% 50%;
+    /* Silver colors - Light mode versions */
+    --neon-cyan: 220 15% 35%;
+    --neon-magenta: 220 10% 45%;
+    --neon-purple: 220 8% 50%;
+    --neon-green: 150 35% 40%;
+    --neon-orange: 30 55% 50%;
 
-    /* Sidebar - Cream */
-    --sidebar-background: 35 20% 92%;
-    --sidebar-foreground: 30 15% 20%;
-    --sidebar-primary: 175 60% 35%;
+    /* Sidebar - Light silver */
+    --sidebar-background: 220 15% 94%;
+    --sidebar-foreground: 220 15% 20%;
+    --sidebar-primary: 220 15% 25%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 280 50% 50%;
+    --sidebar-accent: 220 12% 40%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 35 15% 85%;
-    --sidebar-ring: 175 60% 35%;
+    --sidebar-border: 220 12% 88%;
+    --sidebar-ring: 220 15% 35%;
   }
 }
 
@@ -134,62 +134,62 @@
 }
 
 @layer utilities {
-  /* Neon glow effects */
+  /* Silver glow effects */
   .neon-glow-cyan {
     box-shadow: 
-      0 0 5px hsl(var(--neon-cyan) / 0.5),
-      0 0 20px hsl(var(--neon-cyan) / 0.3),
-      0 0 40px hsl(var(--neon-cyan) / 0.1);
+      0 0 5px hsl(var(--silver) / 0.4),
+      0 0 20px hsl(var(--silver) / 0.2),
+      0 0 40px hsl(var(--silver) / 0.1);
   }
 
   .neon-glow-magenta {
     box-shadow: 
-      0 0 5px hsl(var(--neon-magenta) / 0.5),
-      0 0 20px hsl(var(--neon-magenta) / 0.3),
-      0 0 40px hsl(var(--neon-magenta) / 0.1);
+      0 0 5px hsl(var(--chrome) / 0.4),
+      0 0 20px hsl(var(--chrome) / 0.2),
+      0 0 40px hsl(var(--chrome) / 0.1);
   }
 
   .neon-glow-purple {
     box-shadow: 
-      0 0 5px hsl(var(--neon-purple) / 0.5),
-      0 0 20px hsl(var(--neon-purple) / 0.3),
-      0 0 40px hsl(var(--neon-purple) / 0.1);
+      0 0 5px hsl(var(--primary) / 0.4),
+      0 0 20px hsl(var(--primary) / 0.2),
+      0 0 40px hsl(var(--primary) / 0.1);
   }
 
   .neon-text-cyan {
     text-shadow: 
-      0 0 5px hsl(var(--neon-cyan) / 0.8),
-      0 0 20px hsl(var(--neon-cyan) / 0.5),
-      0 0 40px hsl(var(--neon-cyan) / 0.3);
+      0 0 5px hsl(var(--silver) / 0.6),
+      0 0 20px hsl(var(--silver) / 0.4),
+      0 0 40px hsl(var(--silver) / 0.2);
   }
 
   .neon-text-magenta {
     text-shadow: 
-      0 0 5px hsl(var(--neon-magenta) / 0.8),
-      0 0 20px hsl(var(--neon-magenta) / 0.5),
-      0 0 40px hsl(var(--neon-magenta) / 0.3);
+      0 0 5px hsl(var(--chrome) / 0.6),
+      0 0 20px hsl(var(--chrome) / 0.4),
+      0 0 40px hsl(var(--chrome) / 0.2);
   }
 
   .neon-border {
-    border: 1px solid hsl(var(--neon-cyan) / 0.5);
+    border: 1px solid hsl(var(--silver) / 0.4);
     box-shadow: 
-      inset 0 0 10px hsl(var(--neon-cyan) / 0.1),
-      0 0 10px hsl(var(--neon-cyan) / 0.2);
+      inset 0 0 10px hsl(var(--silver) / 0.05),
+      0 0 10px hsl(var(--silver) / 0.15);
   }
 
   .cyber-grid {
     background-image: 
-      linear-gradient(hsl(var(--neon-cyan) / 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, hsl(var(--neon-cyan) / 0.03) 1px, transparent 1px);
+      linear-gradient(hsl(var(--silver) / 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--silver) / 0.04) 1px, transparent 1px);
     background-size: 50px 50px;
   }
 
   .gradient-cyber {
     background: linear-gradient(
       135deg,
-      hsl(var(--neon-cyan) / 0.1) 0%,
-      hsl(var(--neon-purple) / 0.1) 50%,
-      hsl(var(--neon-magenta) / 0.1) 100%
+      hsl(var(--silver) / 0.08) 0%,
+      hsl(var(--chrome) / 0.06) 50%,
+      hsl(var(--primary) / 0.08) 100%
     );
   }
 }
@@ -238,7 +238,7 @@
     border-color: transparent;
   }
   50% {
-    border-color: hsl(var(--neon-cyan));
+    border-color: hsl(var(--silver));
   }
 }
 
@@ -282,10 +282,10 @@
 
 @keyframes glow-pulse {
   0%, 100% {
-    box-shadow: 0 0 5px hsl(var(--neon-cyan) / 0.5), 0 0 10px hsl(var(--neon-cyan) / 0.3);
+    box-shadow: 0 0 5px hsl(var(--silver) / 0.4), 0 0 10px hsl(var(--silver) / 0.2);
   }
   50% {
-    box-shadow: 0 0 20px hsl(var(--neon-cyan) / 0.8), 0 0 40px hsl(var(--neon-cyan) / 0.5);
+    box-shadow: 0 0 20px hsl(var(--silver) / 0.6), 0 0 40px hsl(var(--silver) / 0.3);
   }
 }
 
@@ -342,10 +342,10 @@
 
 @keyframes text-glow {
   0%, 100% {
-    text-shadow: 0 0 5px hsl(var(--neon-cyan) / 0.5);
+    text-shadow: 0 0 5px hsl(var(--silver) / 0.4);
   }
   50% {
-    text-shadow: 0 0 20px hsl(var(--neon-cyan) / 0.9), 0 0 40px hsl(var(--neon-cyan) / 0.6);
+    text-shadow: 0 0 20px hsl(var(--silver) / 0.7), 0 0 40px hsl(var(--silver) / 0.4);
   }
 }
 
@@ -398,10 +398,10 @@
 .animate-border-flow {
   background: linear-gradient(
     90deg,
-    hsl(var(--neon-cyan)),
-    hsl(var(--neon-magenta)),
-    hsl(var(--neon-purple)),
-    hsl(var(--neon-cyan))
+    hsl(var(--primary)),
+    hsl(var(--silver)),
+    hsl(var(--chrome)),
+    hsl(var(--primary))
   );
   background-size: 300% 100%;
   animation: border-flow 4s linear infinite;
@@ -476,7 +476,7 @@
   background: linear-gradient(
     90deg,
     transparent,
-    hsl(var(--neon-cyan) / 0.8),
+    hsl(var(--silver) / 0.6),
     transparent
   );
   animation: scan-line 3s linear infinite;
