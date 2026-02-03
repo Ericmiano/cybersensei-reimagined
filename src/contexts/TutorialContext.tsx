@@ -14,13 +14,13 @@ const TUTORIAL_STEPS: TutorialStep[] = [
   {
     id: "welcome",
     title: "Welcome to Cyber Sensei! 🛡️",
-    description: "Let's take a quick tour to help you get started on your cybersecurity journey.",
+    description: "Let's take a quick tour to help you get started on your cybersecurity journey. Swipe left/right or use arrows to navigate.",
     placement: "center",
   },
   {
     id: "sidebar",
     title: "Navigation Sidebar",
-    description: "Use the sidebar to navigate between different sections: Dashboard, Chat, Training, Analytics, and Settings.",
+    description: "Use the sidebar to navigate between different sections. Tap the menu icon to toggle it on mobile.",
     targetSelector: "[data-tutorial='sidebar']",
     placement: "right",
     highlight: true,
@@ -36,7 +36,7 @@ const TUTORIAL_STEPS: TutorialStep[] = [
   {
     id: "chat",
     title: "AI Chat Interface",
-    description: "Ask Cyber Sensei anything about cybersecurity. Get personalized guidance and answers to your questions.",
+    description: "Ask Cyber Sensei anything about cybersecurity. Get personalized guidance and answers.",
     targetSelector: "[data-tutorial='chat-link']",
     placement: "right",
     highlight: true,
@@ -52,13 +52,31 @@ const TUTORIAL_STEPS: TutorialStep[] = [
   {
     id: "xp-system",
     title: "XP & Leveling System",
-    description: "Earn XP by completing lessons, quizzes, and exercises. Level up to unlock new content!",
+    description: "Earn XP by completing lessons, quizzes, and exercises. Level up to unlock new content and achievements!",
     placement: "center",
   },
   {
     id: "streaks",
-    title: "Daily Streaks",
-    description: "Maintain your learning streak by training every day. Longer streaks earn bonus rewards!",
+    title: "Daily Streaks 🔥",
+    description: "Maintain your learning streak by training every day. Longer streaks earn bonus XP rewards!",
+    placement: "center",
+  },
+  {
+    id: "achievements",
+    title: "Achievements & Badges",
+    description: "Unlock badges as you progress. Complete challenges, maintain streaks, and master topics to earn them all.",
+    placement: "center",
+  },
+  {
+    id: "settings",
+    title: "Customize Your Experience",
+    description: "Visit Settings to personalize themes, notifications, and keyboard shortcuts.",
+    placement: "center",
+  },
+  {
+    id: "profile",
+    title: "Your Profile",
+    description: "Create an account to save your progress across devices and compete on leaderboards.",
     placement: "center",
   },
   {
