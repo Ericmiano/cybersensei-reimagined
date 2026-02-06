@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
+import Footer from "./Footer";
 import { cn } from "@/lib/utils";
 import TutorialOverlay from "@/components/tutorial/TutorialOverlay";
 import TutorialTrigger from "@/components/tutorial/TutorialTrigger";
@@ -18,6 +19,10 @@ export function AppLayout({ children }: AppLayoutProps) {
           <header className="h-14 flex items-center px-3 sm:px-4 border-b border-border/30 bg-background/50 backdrop-blur-md sticky top-0 z-40">
             <SidebarTrigger className="hover:bg-primary/10 hover:text-primary transition-colors" />
             <div className="ml-auto flex items-center gap-2 sm:gap-4">
+              <kbd className="hidden sm:inline-flex items-center gap-1 text-[10px] font-mono px-2 py-1 rounded bg-muted border border-border text-muted-foreground cursor-pointer hover:border-primary/30 transition-colors"
+                onClick={() => window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true }))}>
+                ⌘K
+              </kbd>
               <TutorialTrigger />
             </div>
           </header>
@@ -29,6 +34,7 @@ export function AppLayout({ children }: AppLayoutProps) {
               {children}
             </div>
           </main>
+          <Footer />
         </div>
         <TutorialOverlay />
       </div>

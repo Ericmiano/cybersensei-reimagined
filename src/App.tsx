@@ -11,6 +11,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { TutorialProvider } from "@/contexts/TutorialContext";
 import { AppLayout } from "@/components/layout/AppLayout";
 import AchievementToast from "@/components/gamification/AchievementToast";
+import CommandPalette from "@/components/CommandPalette";
 import { Skeleton } from "@/components/ui/skeleton";
 
 // Eager load critical pages
@@ -67,6 +68,7 @@ const App = () => (
                 <Toaster />
                 <Sonner />
                 <AchievementToast />
+                <CommandPalette />
                 <BrowserRouter>
                   <Routes>
                     {/* Auth page without AppLayout */}
