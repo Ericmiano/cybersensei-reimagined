@@ -23,6 +23,7 @@ import { useUserProgress, ACHIEVEMENTS } from "@/contexts/UserProgressContext";
 import XPBar from "@/components/gamification/XPBar";
 import StreakDisplay from "@/components/gamification/StreakDisplay";
 import DailyChallenges from "@/components/gamification/DailyChallenges";
+import Leaderboard from "@/components/gamification/Leaderboard";
 
 export default function DashboardPage() {
   const { progress, getAchievements } = useUserProgress();
@@ -155,9 +156,10 @@ export default function DashboardPage() {
         ))}
       </div>
 
-      {/* Daily Challenges */}
-      <div className="mb-6 sm:mb-8">
+      {/* Daily Challenges & Leaderboard */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
         <DailyChallenges />
+        <Leaderboard />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">

@@ -64,6 +64,10 @@ export default {
           green: "hsl(var(--neon-green))",
           orange: "hsl(var(--neon-orange))",
         },
+        silver: "hsl(var(--silver))",
+        chrome: "hsl(var(--chrome))",
+        electric: "hsl(var(--electric))",
+        platinum: "hsl(var(--platinum))",
       },
       borderRadius: {
         lg: "var(--radius)",
