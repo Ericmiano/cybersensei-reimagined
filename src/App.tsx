@@ -67,9 +67,9 @@ const App = () => (
               <TooltipProvider>
                 <Toaster />
                 <Sonner />
+                <BrowserRouter>
                 <AchievementToast />
                 <CommandPalette />
-                <BrowserRouter>
                   <Routes>
                     {/* Auth page without AppLayout */}
                     <Route path="/auth" element={<AuthPageWrapper />} />
