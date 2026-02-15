@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { X, ChevronLeft, ChevronRight, Sparkles, SkipForward } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { TutorialStep } from "@/contexts/TutorialContext";
 
@@ -31,17 +30,17 @@ export default function TutorialCard({
   const progress = ((currentStep + 1) / totalSteps) * 100;
 
   return (
-    <Card
+    <div
       className={cn(
-        "w-[calc(100vw-2rem)] max-w-sm overflow-hidden",
-        "bg-card/95 backdrop-blur-xl border-primary/30",
+        "w-[calc(100vw-2rem)] max-w-sm overflow-hidden rounded-2xl",
+        "bg-card/95 backdrop-blur-xl border border-primary/30",
         "shadow-2xl shadow-primary/20"
       )}
     >
-      {/* Progress bar */}
+      {/* Progress bar - amber to rust gradient */}
       <div className="h-1 bg-muted">
         <motion.div
-          className="h-full bg-gradient-to-r from-primary via-secondary to-primary"
+          className="h-full animate-border-flow"
           initial={{ width: 0 }}
           animate={{ width: `${progress}%` }}
           transition={{ duration: 0.3 }}
@@ -54,7 +53,7 @@ export default function TutorialCard({
           <div className="flex items-center gap-2">
             <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-primary animate-pulse" />
             <span className="text-xs text-muted-foreground font-mono">
-              {currentStep + 1} / {totalSteps}
+              STEP {currentStep + 1} / {totalSteps}
             </span>
           </div>
           <Button
@@ -67,13 +66,13 @@ export default function TutorialCard({
           </Button>
         </div>
 
-        {/* Content */}
-        <div className="mb-4 sm:mb-6">
-          <h3 className="font-cyber text-lg sm:text-xl text-primary mb-2 leading-tight">
-            {step.title}
+        {/* Content - always visible */}
+        <div className="mb-4 sm:mb-6 min-h-[60px]">
+          <h3 className="font-cyber text-lg sm:text-xl text-primary mb-2 leading-tight font-bold">
+            {step.title || "Tutorial Step"}
           </h3>
-          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-            {step.description}
+          <p className="text-sm sm:text-base text-foreground/80 leading-relaxed font-mono">
+            {step.description || "Continue to the next step."}
           </p>
         </div>
 
@@ -87,61 +86,58 @@ export default function TutorialCard({
                 index === currentStep
                   ? "w-5 sm:w-6 bg-primary"
                   : index < currentStep
-                  ? "w-1.5 bg-primary/50"
+                  ? "w-1.5 bg-secondary"
                   : "w-1.5 bg-muted-foreground/30"
               )}
-              animate={{
-                scale: index === currentStep ? 1 : 0.8,
-              }}
+              animate={{ scale: index === currentStep ? 1 : 0.8 }}
             />
           ))}
         </div>
 
-        {/* Swipe hint for mobile */}
-        <p className="text-xs text-muted-foreground/60 text-center mb-3 sm:hidden">
-          ← Swipe to navigate →
+        {/* Swipe hint */}
+        <p className="text-xs text-muted-foreground/60 text-center mb-3 sm:hidden font-mono">
+          ← SWIPE TO NAVIGATE →
         </p>
 
-        {/* Navigation buttons */}
+        {/* Navigation */}
         <div className="flex items-center justify-between gap-2">
           <Button
             variant="ghost"
             onClick={onPrev}
             disabled={isFirstStep}
             size="sm"
-            className="gap-1 px-2 sm:px-3"
+            className="gap-1 px-2 sm:px-3 font-cyber"
           >
             <ChevronLeft className="h-4 w-4" />
-            <span className="hidden sm:inline">Back</span>
+            <span className="hidden sm:inline">BACK</span>
           </Button>
 
           <Button
             variant="ghost"
             onClick={onSkip}
             size="sm"
-            className="text-muted-foreground hover:text-foreground gap-1 px-2 sm:px-3"
+            className="text-muted-foreground hover:text-foreground gap-1 px-2 sm:px-3 font-mono text-xs"
           >
             <SkipForward className="h-4 w-4" />
-            <span className="hidden sm:inline">Skip</span>
+            <span className="hidden sm:inline">SKIP</span>
           </Button>
 
           <Button
             onClick={isLastStep ? onEnd : onNext}
             size="sm"
-            className="gap-1 px-3 sm:px-4 neon-glow-cyan"
+            className="gap-1 px-3 sm:px-4 neon-glow-cyan font-cyber font-bold"
           >
             {isLastStep ? (
-              step.action || "Finish"
+              step.action || "FINISH"
             ) : (
               <>
-                <span className="hidden sm:inline">Next</span>
-                <span className="sm:hidden">Next</span>
+                NEXT
                 <ChevronRight className="h-4 w-4" />
               </>
             )}
           </Button>
         </div>
       </div>
-    </Card>
+    </div>
   );
 }

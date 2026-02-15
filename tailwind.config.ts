@@ -64,6 +64,10 @@ export default {
           green: "hsl(var(--neon-green))",
           orange: "hsl(var(--neon-orange))",
         },
+        amber: "hsl(var(--amber))",
+        rust: "hsl(var(--rust))",
+        "deep-rust": "hsl(var(--deep-rust))",
+        cream: "hsl(var(--cream))",
         silver: "hsl(var(--silver))",
         chrome: "hsl(var(--chrome))",
         electric: "hsl(var(--electric))",
@@ -73,10 +77,12 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        "2xl": "1rem",
+        "3xl": "1.5rem",
       },
       fontFamily: {
-        cyber: ["Orbitron", "sans-serif"],
-        mono: ["JetBrains Mono", "Fira Code", "monospace"],
+        cyber: ["Rajdhani", "sans-serif"],
+        mono: ["Share Tech Mono", "monospace"],
       },
       keyframes: {
         "accordion-down": {
@@ -89,7 +95,7 @@ export default {
         },
         "pulse-glow": {
           "0%, 100%": { opacity: "1", filter: "brightness(1)" },
-          "50%": { opacity: "0.8", filter: "brightness(1.2)" },
+          "50%": { opacity: "0.85", filter: "brightness(1.3)" },
         },
         float: {
           "0%, 100%": { transform: "translateY(0)" },
@@ -118,9 +124,11 @@ export default {
         "neon-flicker": "neon-flicker 3s linear infinite",
       },
       boxShadow: {
-        "neon-cyan": "0 0 5px hsl(var(--neon-cyan) / 0.5), 0 0 20px hsl(var(--neon-cyan) / 0.3), 0 0 40px hsl(var(--neon-cyan) / 0.1)",
-        "neon-magenta": "0 0 5px hsl(var(--neon-magenta) / 0.5), 0 0 20px hsl(var(--neon-magenta) / 0.3), 0 0 40px hsl(var(--neon-magenta) / 0.1)",
-        "neon-purple": "0 0 5px hsl(var(--neon-purple) / 0.5), 0 0 20px hsl(var(--neon-purple) / 0.3), 0 0 40px hsl(var(--neon-purple) / 0.1)",
+        "neon-amber": "0 0 5px hsl(var(--amber) / 0.5), 0 0 20px hsl(var(--amber) / 0.3), 0 0 40px hsl(var(--amber) / 0.1)",
+        "neon-rust": "0 0 5px hsl(var(--rust) / 0.5), 0 0 20px hsl(var(--rust) / 0.3), 0 0 40px hsl(var(--rust) / 0.1)",
+        "neon-cyan": "0 0 5px hsl(var(--amber) / 0.5), 0 0 20px hsl(var(--amber) / 0.3), 0 0 40px hsl(var(--amber) / 0.1)",
+        "neon-magenta": "0 0 5px hsl(var(--rust) / 0.5), 0 0 20px hsl(var(--rust) / 0.3), 0 0 40px hsl(var(--rust) / 0.1)",
+        "neon-purple": "0 0 5px hsl(var(--deep-rust) / 0.5), 0 0 20px hsl(var(--deep-rust) / 0.3), 0 0 40px hsl(var(--deep-rust) / 0.1)",
       },
     },
   },

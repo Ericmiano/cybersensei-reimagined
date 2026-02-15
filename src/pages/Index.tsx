@@ -2,13 +2,11 @@ import { Shield, Zap, MessageSquare, BookOpen, BarChart3, ArrowRight, PlayCircle
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { useUserProgress } from "@/contexts/UserProgressContext";
 import { useAuth } from "@/contexts/AuthContext";
 
-// All available lessons across modules
 const ALL_LESSONS = [
   { moduleId: "1", lessonId: "1-1", title: "Introduction to Cybersecurity" },
   { moduleId: "1", lessonId: "1-2", title: "The CIA Triad" },
@@ -36,39 +34,30 @@ const features = [
     title: "AI Chat Interface",
     description: "Interact with your cybersecurity sensei for personalized guidance and answers.",
     link: "/chat",
-    color: "primary",
   },
   {
     icon: BookOpen,
     title: "Training Modules",
     description: "Master cybersecurity concepts through interactive courses and challenges.",
     link: "/training",
-    color: "secondary",
   },
   {
     icon: BarChart3,
     title: "Progress Analytics",
     description: "Track your learning journey with detailed insights and statistics.",
     link: "/analytics",
-    color: "accent",
   },
 ];
 
 const Index = () => {
   const { progress } = useUserProgress();
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated } = useAuth();
   
-  // Find the next incomplete lesson
   const getNextLesson = () => {
     const completedIds = new Set(
-      progress.lessonsCompleted
-        .filter(l => l.completed)
-        .map(l => l.lessonId)
+      progress.lessonsCompleted.filter(l => l.completed).map(l => l.lessonId)
     );
-    
-    // Find first incomplete lesson
     const nextLesson = ALL_LESSONS.find(lesson => !completedIds.has(lesson.lessonId));
-    
     if (nextLesson) {
       return {
         moduleId: nextLesson.moduleId,
@@ -77,14 +66,7 @@ const Index = () => {
         lessonTitle: nextLesson.title,
       };
     }
-    
-    // If all completed, return first lesson for review
-    return {
-      moduleId: "1",
-      moduleName: "Cybersecurity Fundamentals",
-      lessonId: "1-1",
-      lessonTitle: "Introduction to Cybersecurity",
-    };
+    return { moduleId: "1", moduleName: "Cybersecurity Fundamentals", lessonId: "1-1", lessonTitle: "Introduction to Cybersecurity" };
   };
 
   const nextLesson = getNextLesson();
@@ -94,28 +76,29 @@ const Index = () => {
   return (
     <div className="min-h-full">
       {/* Hero Section */}
-      <section className="relative py-12 sm:py-20 px-4 sm:px-6 overflow-hidden">
-        {/* Background effects */}
-        <div className="absolute inset-0 gradient-cyber opacity-50" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] bg-primary/5 rounded-full blur-3xl" />
+      <section className="relative py-16 sm:py-24 px-4 sm:px-6 overflow-hidden">
+        {/* Aurora background */}
+        <div className="absolute inset-0 gradient-cyber opacity-60" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] sm:w-[700px] h-[500px] sm:h-[700px] rounded-full" 
+          style={{ background: 'radial-gradient(circle, hsl(var(--amber) / 0.1) 0%, transparent 70%)', filter: 'blur(80px)' }} />
         
         <div className="relative max-w-4xl mx-auto text-center">
-          {/* Logo */}
-          <div className="flex justify-center mb-6 sm:mb-8">
+          {/* Logo with amber glow */}
+          <div className="flex justify-center mb-8 sm:mb-10">
             <div className="relative animate-float">
-              <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full scale-150" />
+              <div className="absolute inset-0 bg-primary/25 blur-3xl rounded-full scale-150" />
               <Shield className="relative h-16 w-16 sm:h-24 sm:w-24 text-primary animate-pulse-glow" />
               <Zap className="absolute -bottom-1 sm:-bottom-2 -right-1 sm:-right-2 h-7 w-7 sm:h-10 sm:w-10 text-secondary animate-neon-flicker" />
             </div>
           </div>
 
-          {/* Title */}
-          <h1 className="font-cyber text-3xl sm:text-5xl md:text-7xl font-bold mb-3 sm:mb-4 tracking-wider">
+          {/* Title with amber/rust split */}
+          <h1 className="font-cyber text-4xl sm:text-6xl md:text-8xl font-bold mb-3 sm:mb-4 tracking-wider">
             <span className="text-primary neon-text-cyan">CYBER</span>
             <span className="text-secondary neon-text-magenta ml-2 sm:ml-4">SENSEI</span>
           </h1>
           
-          <p className="text-base sm:text-xl md:text-2xl text-muted-foreground mb-6 sm:mb-8 max-w-2xl mx-auto px-2">
+          <p className="text-base sm:text-xl md:text-2xl text-muted-foreground mb-8 sm:mb-10 max-w-2xl mx-auto px-2 font-mono">
             Your AI-powered cybersecurity mentor. Learn, train, and master the art of digital defense.
           </p>
 
@@ -126,15 +109,15 @@ const Index = () => {
                 asChild
                 size="lg"
                 className={cn(
-                  "font-cyber text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6",
-                  "bg-primary hover:bg-primary/90",
+                  "font-cyber text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 font-bold tracking-wider",
+                  "bg-primary hover:bg-primary/90 text-primary-foreground",
                   "neon-glow-cyan transition-all duration-300",
                   "hover:scale-105"
                 )}
               >
                 <Link to="/auth">
                   <LogIn className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-                  Get Started
+                  GET STARTED
                 </Link>
               </Button>
             ) : (
@@ -142,15 +125,15 @@ const Index = () => {
                 asChild
                 size="lg"
                 className={cn(
-                  "font-cyber text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6",
-                  "bg-primary hover:bg-primary/90",
+                  "font-cyber text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 font-bold tracking-wider",
+                  "bg-primary hover:bg-primary/90 text-primary-foreground",
                   "neon-glow-cyan transition-all duration-300",
                   "hover:scale-105"
                 )}
               >
                 <Link to="/chat">
                   <MessageSquare className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-                  Start Training
+                  START TRAINING
                 </Link>
               </Button>
             )}
@@ -159,7 +142,7 @@ const Index = () => {
               variant="outline"
               size="lg"
               className={cn(
-                "font-cyber text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6",
+                "font-cyber text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 font-bold tracking-wider",
                 "border-secondary/50 hover:border-secondary",
                 "hover:bg-secondary/10 hover:text-secondary",
                 "transition-all duration-300"
@@ -167,39 +150,39 @@ const Index = () => {
             >
               <Link to="/training">
                 <BookOpen className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-                Browse Modules
+                BROWSE MODULES
               </Link>
             </Button>
           </div>
         </div>
       </section>
 
-      {/* Continue Learning Section */}
+      {/* Continue Learning */}
       {completedLessons > 0 && (
         <section className="py-8 px-6">
           <div className="max-w-4xl mx-auto">
             <Card className="bg-card/50 border-primary/30 neon-border interactive-card overflow-hidden">
-              <div className="h-1 bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-magenta animate-border-flow" />
+              <div className="h-1 animate-border-flow" />
               <CardContent className="p-6">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                   <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-xl bg-primary/20 flex items-center justify-center animate-glow-pulse">
+                    <div className="w-14 h-14 rounded-xl bg-primary/20 flex items-center justify-center animate-glow-pulse corner-brackets">
                       <PlayCircle className="h-7 w-7 text-primary" />
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground mb-1">Continue where you left off</p>
-                      <h3 className="font-cyber text-lg text-primary">{nextLesson.moduleName}</h3>
-                      <p className="text-sm text-muted-foreground">{nextLesson.lessonTitle}</p>
+                      <p className="text-sm text-muted-foreground mb-1 font-mono uppercase tracking-wider">Continue where you left off</p>
+                      <h3 className="font-cyber text-lg text-primary font-bold">{nextLesson.moduleName}</h3>
+                      <p className="text-sm text-muted-foreground font-mono">{nextLesson.lessonTitle}</p>
                       <div className="flex items-center gap-2 mt-1">
                         <Progress value={(completedLessons / totalLessons) * 100} className="w-32 h-2" />
-                        <span className="text-xs text-muted-foreground">{completedLessons}/{totalLessons} lessons</span>
+                        <span className="text-xs text-muted-foreground font-mono">{completedLessons}/{totalLessons}</span>
                       </div>
                     </div>
                   </div>
-                  <Button asChild className="neon-glow-cyan font-cyber">
+                  <Button asChild className="neon-glow-cyan font-cyber font-bold tracking-wider">
                     <Link to={`/training/${nextLesson.moduleId}/lesson/${nextLesson.lessonId}`}>
                       <PlayCircle className="h-4 w-4 mr-2" />
-                      Continue Learning
+                      CONTINUE
                     </Link>
                   </Button>
                 </div>
@@ -209,24 +192,24 @@ const Index = () => {
         </section>
       )}
 
-      {/* Quick Stats for Returning Users */}
+      {/* Quick Stats */}
       {progress.xp > 0 && (
         <section className="py-4 px-6">
           <div className="max-w-4xl mx-auto">
             <div className="grid grid-cols-3 gap-4">
               {[
-                { label: "Total XP", value: progress.xp.toLocaleString(), icon: Zap },
-                { label: "Current Streak", value: `${progress.currentStreak} days`, icon: TrendingUp },
-                { label: "Level", value: progress.level.toString(), icon: Sparkles },
+                { label: "TOTAL XP", value: progress.xp.toLocaleString(), icon: Zap },
+                { label: "STREAK", value: `${progress.currentStreak}d`, icon: TrendingUp },
+                { label: "LEVEL", value: progress.level.toString(), icon: Sparkles },
               ].map((stat, index) => (
                 <Card
                   key={stat.label}
-                  className="bg-card/30 border-border/30 p-4 text-center animate-slide-up hover-lift"
+                  className="bg-card/30 border-border/30 p-4 text-center animate-slide-up hover-lift corner-brackets"
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
                   <stat.icon className="h-5 w-5 text-primary mx-auto mb-2" />
-                  <div className="font-cyber text-xl text-primary">{stat.value}</div>
-                  <div className="text-xs text-muted-foreground">{stat.label}</div>
+                  <div className="font-cyber text-xl text-primary font-bold neon-text-cyan">{stat.value}</div>
+                  <div className="text-[10px] text-muted-foreground font-mono tracking-widest">{stat.label}</div>
                 </Card>
               ))}
             </div>
@@ -237,7 +220,7 @@ const Index = () => {
       {/* Features Section */}
       <section className="py-12 sm:py-16 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
-          <h2 className="font-cyber text-2xl sm:text-3xl text-center mb-8 sm:mb-12 text-foreground">
+          <h2 className="font-cyber text-2xl sm:text-3xl text-center mb-8 sm:mb-12 font-bold tracking-wider">
             <span className="text-primary">SYSTEM</span>
             <span className="text-muted-foreground ml-2">CAPABILITIES</span>
           </h2>
@@ -251,7 +234,7 @@ const Index = () => {
                   "bg-card/50 backdrop-blur-sm",
                   "border-border/50 hover:border-primary/50",
                   "transition-all duration-300 hover:-translate-y-2 hover-lift",
-                  "animate-slide-up"
+                  "animate-slide-up rounded-2xl"
                 )}
                 style={{ animationDelay: `${index * 100}ms` }}
               >
@@ -259,16 +242,16 @@ const Index = () => {
                 
                 <CardHeader className="p-4 sm:p-6">
                   <div className={cn(
-                    "w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center mb-3 sm:mb-4",
+                    "w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4",
                     "bg-primary/10 group-hover:bg-primary/20",
                     "transition-colors duration-300"
                   )}>
                     <feature.icon className="h-5 w-5 sm:h-6 sm:w-6 text-primary group-hover:scale-110 transition-transform" />
                   </div>
-                  <CardTitle className="font-cyber text-lg sm:text-xl group-hover:text-primary transition-colors">
+                  <CardTitle className="font-cyber text-lg sm:text-xl group-hover:text-primary transition-colors font-bold tracking-wider">
                     {feature.title}
                   </CardTitle>
-                  <CardDescription className="text-sm text-muted-foreground">
+                  <CardDescription className="text-sm text-muted-foreground font-mono">
                     {feature.description}
                   </CardDescription>
                 </CardHeader>
@@ -277,12 +260,12 @@ const Index = () => {
                   <Link
                     to={feature.link}
                     className={cn(
-                      "inline-flex items-center text-sm font-medium",
+                      "inline-flex items-center text-sm font-bold font-cyber tracking-wider",
                       "text-primary hover:text-primary/80",
                       "group/link transition-colors"
                     )}
                   >
-                    Explore
+                    EXPLORE
                     <ArrowRight className="ml-1 h-4 w-4 group-hover/link:translate-x-1 transition-transform" />
                   </Link>
                 </CardContent>
@@ -310,7 +293,7 @@ const Index = () => {
                 <div className="font-cyber text-2xl sm:text-3xl md:text-4xl font-bold text-primary neon-text-cyan mb-1 sm:mb-2">
                   {stat.value}
                 </div>
-                <div className="text-[10px] sm:text-sm text-muted-foreground uppercase tracking-wider">
+                <div className="text-[10px] sm:text-sm text-muted-foreground uppercase tracking-widest font-mono">
                   {stat.label}
                 </div>
               </div>
