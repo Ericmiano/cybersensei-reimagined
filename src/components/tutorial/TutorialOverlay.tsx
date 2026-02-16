@@ -80,7 +80,9 @@ export default function TutorialOverlay() {
 
   const isLastStep = currentStep === steps.length - 1;
   const isFirstStep = currentStep === 0;
-  const isCentered = currentStepData.placement === "center" || !targetRect;
+  // Force center if card would overflow viewport (e.g. sidebar is too tall)
+  const wouldOverflow = targetRect && (targetRect.bottom + 300 > window.innerHeight);
+  const isCentered = currentStepData.placement === "center" || !targetRect || wouldOverflow;
 
   return (
     <AnimatePresence>
