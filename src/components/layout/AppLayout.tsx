@@ -8,6 +8,8 @@ import TutorialTrigger from "@/components/tutorial/TutorialTrigger";
 import FloatingParticles from "@/components/effects/FloatingParticles";
 import AuroraBackground from "@/components/effects/AuroraBackground";
 import HUDOverlay from "@/components/effects/HUDOverlay";
+import CursorEffects from "@/components/effects/CursorEffects";
+import ScanlineOverlay from "@/components/effects/ScanlineOverlay";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -20,6 +22,8 @@ export function AppLayout({ children }: AppLayoutProps) {
         <AuroraBackground />
         <FloatingParticles count={25} />
         <HUDOverlay />
+        <CursorEffects />
+        <ScanlineOverlay />
         <AppSidebar />
         <div className="flex-1 flex flex-col min-h-screen min-w-0 relative z-20">
           <header className="h-14 flex items-center px-3 sm:px-4 border-b border-border/30 bg-background/50 backdrop-blur-md sticky top-0 z-40">

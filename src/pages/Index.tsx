@@ -6,6 +6,9 @@ import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { useUserProgress } from "@/contexts/UserProgressContext";
 import { useAuth } from "@/contexts/AuthContext";
+import GlitchText from "@/components/effects/GlitchText";
+import WordReveal from "@/components/effects/WordReveal";
+import InteractiveCard from "@/components/effects/InteractiveCard";
 
 const ALL_LESSONS = [
   { moduleId: "1", lessonId: "1-1", title: "Introduction to Cybersecurity" },
@@ -75,6 +78,17 @@ const Index = () => {
 
   return (
     <div className="min-h-full">
+      {/* HUD Elements */}
+      <div className="fixed top-20 left-72 hud-text z-10 hidden lg:block" aria-hidden="true">
+        SYS.STATUS: ONLINE{"\n"}
+        SEC.LEVEL: MAX{"\n"}
+        USER: DETECTED
+      </div>
+      <div className="fixed bottom-20 right-8 hud-text z-10 hidden lg:block text-right" aria-hidden="true">
+        V.2.0.45{"\n"}
+        CYBER-SENSEI CORE
+      </div>
+
       {/* Hero Section */}
       <section className="relative py-16 sm:py-24 px-4 sm:px-6 overflow-hidden">
         {/* Aurora background */}
@@ -82,6 +96,10 @@ const Index = () => {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] sm:w-[700px] h-[500px] sm:h-[700px] rounded-full" 
           style={{ background: 'radial-gradient(circle, hsl(var(--amber) / 0.1) 0%, transparent 70%)', filter: 'blur(80px)' }} />
         
+        {/* Corner brackets */}
+        <div className="absolute top-8 left-8 w-24 h-24 border-t-2 border-l-2 border-primary/30 rounded-tl-3xl hidden lg:block" />
+        <div className="absolute bottom-8 right-8 w-24 h-24 border-b-2 border-r-2 border-primary/30 rounded-br-3xl hidden lg:block" />
+
         <div className="relative max-w-4xl mx-auto text-center">
           {/* Logo with amber glow */}
           <div className="flex justify-center mb-8 sm:mb-10">
@@ -92,14 +110,27 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Title with amber/rust split */}
+          {/* Title with glitch decryption effect */}
           <h1 className="font-cyber text-4xl sm:text-6xl md:text-8xl font-bold mb-3 sm:mb-4 tracking-wider">
-            <span className="text-primary neon-text-cyan">CYBER</span>
-            <span className="text-secondary neon-text-magenta ml-2 sm:ml-4">SENSEI</span>
+            <GlitchText 
+              text="CYBER" 
+              className="text-primary neon-text-cyan"
+              intensity={0.5}
+            />
+            <GlitchText 
+              text=" SENSEI" 
+              className="text-secondary neon-text-magenta ml-2 sm:ml-4"
+              intensity={0.5}
+            />
           </h1>
           
+          {/* Word-by-word reveal description */}
           <p className="text-base sm:text-xl md:text-2xl text-muted-foreground mb-8 sm:mb-10 max-w-2xl mx-auto px-2 font-mono">
-            Your AI-powered cybersecurity mentor. Learn, train, and master the art of digital defense.
+            <WordReveal 
+              text="Your AI-powered cybersecurity mentor. Learn, train, and master the art of digital defense."
+              baseDelay={1.2}
+              stagger={0.04}
+            />
           </p>
 
           {/* CTA Buttons */}
@@ -117,7 +148,7 @@ const Index = () => {
               >
                 <Link to="/auth">
                   <LogIn className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-                  GET STARTED
+                  INITIALIZE SYSTEM //
                 </Link>
               </Button>
             ) : (
@@ -133,7 +164,7 @@ const Index = () => {
               >
                 <Link to="/chat">
                   <MessageSquare className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-                  START TRAINING
+                  START TRAINING //
                 </Link>
               </Button>
             )}
@@ -150,7 +181,7 @@ const Index = () => {
             >
               <Link to="/training">
                 <BookOpen className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-                BROWSE MODULES
+                BROWSE MODULES_
               </Link>
             </Button>
           </div>
@@ -161,33 +192,35 @@ const Index = () => {
       {completedLessons > 0 && (
         <section className="py-8 px-6">
           <div className="max-w-4xl mx-auto">
-            <Card className="bg-card/50 border-primary/30 neon-border interactive-card overflow-hidden">
-              <div className="h-1 animate-border-flow" />
-              <CardContent className="p-6">
-                <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                  <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-xl bg-primary/20 flex items-center justify-center animate-glow-pulse corner-brackets">
-                      <PlayCircle className="h-7 w-7 text-primary" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground mb-1 font-mono uppercase tracking-wider">Continue where you left off</p>
-                      <h3 className="font-cyber text-lg text-primary font-bold">{nextLesson.moduleName}</h3>
-                      <p className="text-sm text-muted-foreground font-mono">{nextLesson.lessonTitle}</p>
-                      <div className="flex items-center gap-2 mt-1">
-                        <Progress value={(completedLessons / totalLessons) * 100} className="w-32 h-2" />
-                        <span className="text-xs text-muted-foreground font-mono">{completedLessons}/{totalLessons}</span>
+            <InteractiveCard className="rounded-2xl">
+              <Card className="bg-card/50 border-primary/30 neon-border overflow-hidden">
+                <div className="h-1 animate-border-flow" />
+                <CardContent className="p-6">
+                  <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div className="flex items-center gap-4">
+                      <div className="w-14 h-14 rounded-xl bg-primary/20 flex items-center justify-center animate-glow-pulse corner-brackets">
+                        <PlayCircle className="h-7 w-7 text-primary" />
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground mb-1 font-mono uppercase tracking-wider">Continue where you left off</p>
+                        <h3 className="font-cyber text-lg text-primary font-bold">{nextLesson.moduleName}</h3>
+                        <p className="text-sm text-muted-foreground font-mono">{nextLesson.lessonTitle}</p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Progress value={(completedLessons / totalLessons) * 100} className="w-32 h-2" />
+                          <span className="text-xs text-muted-foreground font-mono">{completedLessons}/{totalLessons}</span>
+                        </div>
                       </div>
                     </div>
+                    <Button asChild className="neon-glow-cyan font-cyber font-bold tracking-wider">
+                      <Link to={`/training/${nextLesson.moduleId}/lesson/${nextLesson.lessonId}`}>
+                        <PlayCircle className="h-4 w-4 mr-2" />
+                        CONTINUE
+                      </Link>
+                    </Button>
                   </div>
-                  <Button asChild className="neon-glow-cyan font-cyber font-bold tracking-wider">
-                    <Link to={`/training/${nextLesson.moduleId}/lesson/${nextLesson.lessonId}`}>
-                      <PlayCircle className="h-4 w-4 mr-2" />
-                      CONTINUE
-                    </Link>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </InteractiveCard>
           </div>
         </section>
       )}
@@ -202,15 +235,16 @@ const Index = () => {
                 { label: "STREAK", value: `${progress.currentStreak}d`, icon: TrendingUp },
                 { label: "LEVEL", value: progress.level.toString(), icon: Sparkles },
               ].map((stat, index) => (
-                <Card
-                  key={stat.label}
-                  className="bg-card/30 border-border/30 p-4 text-center animate-slide-up hover-lift corner-brackets"
-                  style={{ animationDelay: `${index * 100}ms` }}
-                >
-                  <stat.icon className="h-5 w-5 text-primary mx-auto mb-2" />
-                  <div className="font-cyber text-xl text-primary font-bold neon-text-cyan">{stat.value}</div>
-                  <div className="text-[10px] text-muted-foreground font-mono tracking-widest">{stat.label}</div>
-                </Card>
+                <InteractiveCard key={stat.label} className="rounded-xl" enableTilt enableBrackets={false}>
+                  <Card
+                    className="bg-card/30 border-border/30 p-4 text-center animate-slide-up"
+                    style={{ animationDelay: `${index * 100}ms` }}
+                  >
+                    <stat.icon className="h-5 w-5 text-primary mx-auto mb-2" />
+                    <div className="font-cyber text-xl text-primary font-bold neon-text-cyan">{stat.value}</div>
+                    <div className="text-[10px] text-muted-foreground font-mono tracking-widest">{stat.label}</div>
+                  </Card>
+                </InteractiveCard>
               ))}
             </div>
           </div>
@@ -220,56 +254,69 @@ const Index = () => {
       {/* Features Section */}
       <section className="py-12 sm:py-16 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
-          <h2 className="font-cyber text-2xl sm:text-3xl text-center mb-8 sm:mb-12 font-bold tracking-wider">
-            <span className="text-primary">SYSTEM</span>
-            <span className="text-muted-foreground ml-2">CAPABILITIES</span>
-          </h2>
+          <div className="text-center mb-8 sm:mb-12 relative">
+            <h2 className="font-cyber text-2xl sm:text-3xl font-bold tracking-wider">
+              <span className="text-primary">SYSTEM</span>
+              <span className="text-muted-foreground ml-2">CAPABILITIES</span>
+            </h2>
+            {/* Animated sweep bar */}
+            <div className="h-1 max-w-xs mx-auto mt-3 overflow-hidden rounded-full">
+              <div className="h-full animate-shimmer" style={{ background: 'linear-gradient(90deg, transparent, hsl(var(--amber) / 0.3), transparent)', backgroundSize: '200% 100%' }} />
+            </div>
+          </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
             {features.map((feature, index) => (
-              <Card
+              <InteractiveCard
                 key={feature.title}
-                className={cn(
-                  "group relative overflow-hidden",
-                  "bg-card/50 backdrop-blur-sm",
-                  "border-border/50 hover:border-primary/50",
-                  "transition-all duration-300 hover:-translate-y-2 hover-lift",
-                  "animate-slide-up rounded-2xl"
-                )}
-                style={{ animationDelay: `${index * 100}ms` }}
+                className="rounded-2xl animate-slide-up"
+                enableTilt
+                enableMagnetic
+                enableGlow
+                enableBrackets
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                
-                <CardHeader className="p-4 sm:p-6">
-                  <div className={cn(
-                    "w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4",
-                    "bg-primary/10 group-hover:bg-primary/20",
-                    "transition-colors duration-300"
-                  )}>
-                    <feature.icon className="h-5 w-5 sm:h-6 sm:w-6 text-primary group-hover:scale-110 transition-transform" />
-                  </div>
-                  <CardTitle className="font-cyber text-lg sm:text-xl group-hover:text-primary transition-colors font-bold tracking-wider">
-                    {feature.title}
-                  </CardTitle>
-                  <CardDescription className="text-sm text-muted-foreground font-mono">
-                    {feature.description}
-                  </CardDescription>
-                </CardHeader>
-                
-                <CardContent className="p-4 sm:p-6 pt-0">
-                  <Link
-                    to={feature.link}
-                    className={cn(
-                      "inline-flex items-center text-sm font-bold font-cyber tracking-wider",
-                      "text-primary hover:text-primary/80",
-                      "group/link transition-colors"
-                    )}
-                  >
-                    EXPLORE
-                    <ArrowRight className="ml-1 h-4 w-4 group-hover/link:translate-x-1 transition-transform" />
-                  </Link>
-                </CardContent>
-              </Card>
+                <Card
+                  className={cn(
+                    "overflow-hidden h-full",
+                    "bg-card/50 backdrop-blur-sm",
+                    "border-border/50 hover:border-primary/50",
+                    "transition-all duration-300"
+                  )}
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  
+                  <CardHeader className="p-4 sm:p-6">
+                    <div className={cn(
+                      "w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4",
+                      "bg-primary/10 group-hover:bg-primary/20",
+                      "transition-colors duration-300"
+                    )}>
+                      <feature.icon className="h-5 w-5 sm:h-6 sm:w-6 text-primary group-hover:scale-110 transition-transform animate-breathe" />
+                    </div>
+                    <CardTitle className="font-cyber text-lg sm:text-xl group-hover:text-primary transition-colors font-bold tracking-wider">
+                      {feature.title}
+                    </CardTitle>
+                    <CardDescription className="text-sm text-muted-foreground font-mono">
+                      {feature.description}
+                    </CardDescription>
+                  </CardHeader>
+                  
+                  <CardContent className="p-4 sm:p-6 pt-0">
+                    <Link
+                      to={feature.link}
+                      className={cn(
+                        "inline-flex items-center text-sm font-bold font-cyber tracking-wider",
+                        "text-primary hover:text-primary/80",
+                        "group/link transition-colors"
+                      )}
+                    >
+                      EXPLORE
+                      <ArrowRight className="ml-1 h-4 w-4 group-hover/link:translate-x-1 transition-transform" />
+                    </Link>
+                  </CardContent>
+                </Card>
+              </InteractiveCard>
             ))}
           </div>
         </div>
